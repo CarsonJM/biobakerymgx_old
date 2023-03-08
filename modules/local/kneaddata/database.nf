@@ -9,10 +9,11 @@ process KNEADDATA_DATABASE {
 
     input:
     val kneaddata_db_type
-    path kneaddata_db_folder
+    path database_dir
 
     output:
-    path "${params.kneaddata_db_folder}*.bt2" , emit: kneaddata_db_index
+    path "kneaddata_database/*.bt2" , emit: kneaddata_db_index
+    path "kneaddata_database" , emit: kneaddata_db_dir
     path "versions.yml" , emit: versions
 
     when:
@@ -23,12 +24,11 @@ process KNEADDATA_DATABASE {
 
     """
     kneaddata_database \\
-        --download  ${params.kneaddata_db_type} \\
-        ${params.kneaddata_db_folder}
+        --download  ${params.kneaddata_db_type} kneaddata_database
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        kneaddata: \$(echo \$(kneaddata --version 2>&1) | sed 's/^.*kneaddata //; s/Using.*\$//' ))
+        kneaddata: \$(echo \$(kneaddata --version 2>&1 | sed 's/^.*kneaddata //; s/Using.*\$//' ))
     END_VERSIONS
     """
 }

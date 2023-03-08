@@ -80,23 +80,27 @@ workflow BIOBAKERYMGX {
     // MODULE: Download KneadData database
     //
     if ( !params.download_kneaddata_db ) {
-        ch_kneaddata_db_folder = file(params.kneaddata_db_folder)
-        ch_kneaddata_db_index = file("${params.kneaddata_db_folder}*.bt2")
+        ch_kneaddata_db_index = file("${params.database_dir}kneaddata/*.bt2")
+        ch_kneaddata_db_dir = file("${params.database_dir}kneaddata")
     }
     else {
         KNEADDATA_DATABASE (
-            params.kneaddata_db_type , params.kneaddata_db_folder
+            params.kneaddata_db_type , params.database_dir
         )
-        ch_kneaddata_db_folder = file(kneaddata_db_folder)
-        ch_kneaddata_db_index = KNEADDATA_DB.out.kneaddata_db_index
-        ch_versions = ch_versions.mix(KNEADDATA_DB.out.versions.first())
+        ch_kneaddata_db_index = KNEADDATA_DATABASE.out.kneaddata_db_index
+        ch_kneaddata_db_dir = KNEADDATA_DATABASE.out.kneaddata_db_dir
+        ch_versions = ch_versions.mix(KNEADDATA_DATABASE.out.versions.first())
     }
 
     //
     // MODULE: Run KneadData
     //
     if ( params.run_kneaddata ) {
-        KNEADDATA_KNEADDATA ( ch_raw_short_reads , ch_kneaddata_db_folder , ch_kneaddata_db_index )
+        KNEADDATA_KNEADDATA ( 
+        ch_raw_short_reads ,
+        ch_kneaddata_db_index , 
+        ch_kneaddata_db_dir ,
+        params.trimmomatic_path )
     }
 
     CUSTOM_DUMPSOFTWAREVERSIONS (

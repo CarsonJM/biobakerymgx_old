@@ -9,14 +9,14 @@ process KNEADDATA_KNEADDATA {
 
     input:
     tuple val(meta), path(reads)
-    path kneaddata_db_folder
     path kneaddata_db_index
-    // path trimmomatic_path
+    path kneaddata_db_dir
+    path trimmomatic_path
 
     output:
-    tuple val(meta), path("*.fastq.gz"), emit: reads
+    tuple val(meta), path("*paired_{1,2}.fastq.gz"), emit: reads
     tuple val(meta), path("*.log"), emit: log
-    path "versions.yml"           , emit: versions
+    path "versions.yml" , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -30,19 +30,19 @@ process KNEADDATA_KNEADDATA {
     kneaddata \\
         --input ${prefix}_1.fastq.gz \\
         --input ${prefix}_2.fastq.gz \\
-        --output /home/carsonjm/resources/ \\
+        --output . \\
         --output-prefix ${prefix} \\
-        --reference-db /home/carsonjm/resources/kneaddata/ \\
+        --reference-db ${kneaddata_db_dir} \\
         --threads ${task.cpus} \\
-        --trimmomatic /usr/local/share/trimmomatic-0.39-2 \\
+        --trimmomatic ${params.trimmomatic_path} \\
         --bypass-trf \\
         $args
 
-    gzip ./*.fastq.gz
+    gzip *.fastq
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        kneaddata: \$(echo \$(kneaddata --version 2>&1) | sed 's/^.*kneaddata //; s/Using.*\$//' ))
+        kneaddata: \$(echo \$(kneaddata --version 2>&1 | sed 's/^.*kneaddata //; s/Using.*\$//' ))
     END_VERSIONS
     """
 }
