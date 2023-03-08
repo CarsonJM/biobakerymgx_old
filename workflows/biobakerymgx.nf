@@ -35,6 +35,12 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 */
 
 //
+// MODULE: Consisting of local modules
+//
+include { KNEADDATA_DATABASE } from '../modules/local/kneaddata/database'
+include { KNEADDATA_KNEADDATA } from '../modules/local/kneaddata/kneaddata'
+
+//
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
@@ -48,7 +54,6 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { FASTQC                      } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
@@ -68,18 +73,31 @@ workflow BIOBAKERYMGX {
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
-    INPUT_CHECK (
-        ch_input
-    )
-    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+    INPUT_CHECK ()
+    ch_raw_short_reads = INPUT_CHECK.out.raw_short_reads
 
     //
-    // MODULE: Run FastQC
+    // MODULE: Download KneadData database
     //
-    FASTQC (
-        INPUT_CHECK.out.reads
-    )
-    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+    if ( !params.download_kneaddata_db ) {
+        ch_kneaddata_db_folder = file(params.kneaddata_db_folder)
+        ch_kneaddata_db_index = file("${params.kneaddata_db_folder}*.bt2")
+    }
+    else {
+        KNEADDATA_DATABASE (
+            params.kneaddata_db_type , params.kneaddata_db_folder
+        )
+        ch_kneaddata_db_folder = file(kneaddata_db_folder)
+        ch_kneaddata_db_index = KNEADDATA_DB.out.kneaddata_db_index
+        ch_versions = ch_versions.mix(KNEADDATA_DB.out.versions.first())
+    }
+
+    //
+    // MODULE: Run KneadData
+    //
+    if ( params.run_kneaddata ) {
+        KNEADDATA_KNEADDATA ( ch_raw_short_reads , ch_kneaddata_db_folder , ch_kneaddata_db_index )
+    }
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
@@ -98,7 +116,6 @@ workflow BIOBAKERYMGX {
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
 
     MULTIQC (
         ch_multiqc_files.collect(),
