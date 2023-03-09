@@ -35,15 +35,14 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 */
 
 //
-// MODULE: Consisting of local modules
+// MODULES: Consisting of local modules
 //
-include { KNEADDATA_DATABASE } from '../modules/local/kneaddata/database'
-include { KNEADDATA_KNEADDATA } from '../modules/local/kneaddata/kneaddata'
 
 //
-// SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
+// SUBWORKFLOWS Consisting of a mix of local and nf-core/modules
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
+include {KNEADDATA } from '../subworkflows/local/kneaddata'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,7 +51,7 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 */
 
 //
-// MODULE: Installed directly from nf-core/modules
+// MODULES: Installed directly from nf-core/modules
 //
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
@@ -71,37 +70,19 @@ workflow BIOBAKERYMGX {
     ch_versions = Channel.empty()
 
     //
-    // SUBWORKFLOW: Read in samplesheet, validate and stage input files
+    // SUBWORKFLOW: input check
     //
+    // Check to make sure that all inputs are correct
     INPUT_CHECK ()
     ch_raw_short_reads = INPUT_CHECK.out.raw_short_reads
 
     //
-    // MODULE: Download KneadData database
+    // SUBWORKFLOW: KneadData
     //
-    if ( !params.download_kneaddata_db ) {
-        ch_kneaddata_db_index = file("${params.database_dir}kneaddata/*.bt2")
-        ch_kneaddata_db_dir = file("${params.database_dir}kneaddata")
-    }
-    else {
-        KNEADDATA_DATABASE (
-            params.kneaddata_db_type , params.database_dir
-        )
-        ch_kneaddata_db_index = KNEADDATA_DATABASE.out.kneaddata_db_index
-        ch_kneaddata_db_dir = KNEADDATA_DATABASE.out.kneaddata_db_dir
-        ch_versions = ch_versions.mix(KNEADDATA_DATABASE.out.versions.first())
-    }
-
-    //
-    // MODULE: Run KneadData
-    //
-    if ( params.run_kneaddata ) {
-        KNEADDATA_KNEADDATA ( 
-        ch_raw_short_reads ,
-        ch_kneaddata_db_index , 
-        ch_kneaddata_db_dir ,
-        params.trimmomatic_path )
-    }
+    // Trim, quality filter, and remove contaminant reads
+    KNEADDATA (
+        ch_raw_short_reads
+    )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')

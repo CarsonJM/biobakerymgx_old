@@ -15,7 +15,7 @@ process KNEADDATA_KNEADDATA {
 
     output:
     tuple val(meta), path("*paired_{1,2}.fastq.gz"), emit: reads
-    tuple val(meta), path("*.log"), emit: log
+    tuple val(meta), path("*kneaddata.log"), emit: kneaddata_log
     path "versions.yml" , emit: versions
 
     when:
@@ -31,7 +31,7 @@ process KNEADDATA_KNEADDATA {
         --input ${prefix}_1.fastq.gz \\
         --input ${prefix}_2.fastq.gz \\
         --output . \\
-        --output-prefix ${prefix} \\
+        --output-prefix ${prefix}_kneaddata \\
         --reference-db ${kneaddata_db_dir} \\
         --threads ${task.cpus} \\
         --trimmomatic ${params.trimmomatic_path} \\
