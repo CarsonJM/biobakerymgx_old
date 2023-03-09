@@ -1,5 +1,5 @@
 process KNEADDATA_READCOUNTS {
-    tag '$kneaddata_read_count_table'
+    tag "$meta.id"
     label 'process_single'
 
     conda "bioconda::kneaddata=0.10.0"

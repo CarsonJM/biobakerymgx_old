@@ -1,5 +1,5 @@
 process KNEADDATA_COMBINEREADCOUNTS {
-    tag '$kneaddata_combine_read_counts'
+    tag 'kneaddata_combine_read_counts'
     label 'process_single'
 
     conda "bioconda::kneaddata=0.10.0"

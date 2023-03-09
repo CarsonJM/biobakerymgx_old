@@ -1,5 +1,5 @@
 process KNEADDATA_DATABASE {
-    tag '$kneaddata_database'
+    tag 'kneaddata_database'
     label 'process_single'
 
     conda "bioconda::kneaddata=0.10.0"

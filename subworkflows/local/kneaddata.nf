@@ -57,7 +57,7 @@ workflow KNEADDATA {
         )
     }
 
-    ch_versions = ch_versions.mix(KNEADDATA_DATABASE.out.versions.first())
+    ch_versions = ch_versions.mix(KNEADDATA_KNEADDATA.out.versions.first())
 
     emit:
     reads = KNEADDATA_KNEADDATA.out.reads // channel: [ val(meta), [ reads ] ]

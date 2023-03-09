@@ -42,7 +42,8 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 // SUBWORKFLOWS Consisting of a mix of local and nf-core/modules
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
-include {KNEADDATA } from '../subworkflows/local/kneaddata'
+include { KNEADDATA } from '../subworkflows/local/kneaddata'
+include { METAPHLAN } from '../subworkflows/local/metaphlan'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -82,6 +83,14 @@ workflow BIOBAKERYMGX {
     // Trim, quality filter, and remove contaminant reads
     KNEADDATA (
         ch_raw_short_reads
+    )
+
+    //
+    // SUBWORKFLOW: MetaPhlAn4
+    //
+    // Get taxonomic profile of reads
+    METAPHLAN (
+        KNEADDATA.out.reads
     )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
