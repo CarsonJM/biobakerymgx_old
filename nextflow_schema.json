@@ -5,6 +5,138 @@
     "description": "Pipeline implementing biobakery tools fmicrobiome analysis of shotgun metagenomic sequences",
     "type": "object",
     "definitions": {
+        "kneaddata_options": {
+            "title": "KneadData options",
+            "type": "object",
+            "description": "Parameters for running KneadData",
+            "default": "",
+            "fa_icon": "fas fa-dna",
+            "properties": {
+                "download_kneaddata_db": {
+                    "type": "boolean",
+                    "description": "Download KneadData contaminant database."
+                },
+                "kneaddata_db_type": {
+                    "type": "string",
+                    "default": "human_genome",
+                    "description": "Type of KneadData contaminant database to be downloaded",
+                    "enum": ["human_genome", "mouse_C57BL"]
+                },
+                "run_kneaddata": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run KneadData."
+                },
+                "trimmomatic_path": {
+                    "type": "string",
+                    "default": "/usr/local/share/trimmomatic-0.39-2",
+                    "description": "Path to Trimmomatic executable.",
+                    "format": "directory-path"
+                }
+            },
+            "required": ["download_kneaddata_db", "kneaddata_db_type", "run_kneaddata"]
+        },
+        "metaphlan_options": {
+            "title": "MetaPhlAn options",
+            "type": "object",
+            "description": "Parameters for running MetaPhlAn",
+            "default": "",
+            "properties": {
+                "download_metaphlan_db": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Download MetaPhlan."
+                },
+                "metaphlan_db_version": {
+                    "type": "string",
+                    "default": "mpa_vJan21_CHOCOPhlAnSGB_202103",
+                    "description": "MetaPhlAn database version.",
+                    "enum": ["mpa_vJan21_CHOCOPhlAnSGB_202103", "mpa_vOct22_CHOCOPhlAnSGB_202212"]
+                },
+                "run_metaphlan": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run MetaPhlAn."
+                }
+            },
+            "required": ["download_metaphlan_db", "metaphlan_db_version", "run_metaphlan"]
+        },
+        "humann_options": {
+            "title": "HUMAnN options",
+            "type": "object",
+            "description": "Parameters for running HUMAnN",
+            "default": "",
+            "properties": {
+                "download_chocophlan_db": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Download ChocoPhlan database."
+                },
+                "download_uniref_db": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Download UniRef database."
+                },
+                "download_utility_mapping_db": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Download utility mapping database."
+                },
+                "run_humann": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run HUMAnN"
+                },
+                "regroup_option": {
+                    "type": "string",
+                    "description": "Define how gene families should be regrouped."
+                },
+                "renorm_option": {
+                    "type": "string",
+                    "default": "relab",
+                    "description": "Define how output data should be normalized."
+                }
+            },
+            "required": ["download_chocophlan_db", "download_uniref_db", "download_utility_mapping_db", "run_humann"]
+        },
+        "strainphlan_options": {
+            "title": "StrainPhlAn options",
+            "type": "object",
+            "description": "Parameters for running StrainPhlAn",
+            "default": "",
+            "properties": {
+                "run_strainphlan": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run StrainPhlAn."
+                },
+                "strainphlan_species": {
+                    "type": "string",
+                    "default": "['']",
+                    "description": "Species to run StrainPhlan on."
+                }
+            },
+            "required": ["run_strainphlan", "strainphlan_species"]
+        },
+        "panphlan_options": {
+            "title": "PanPhlAn options",
+            "type": "object",
+            "description": "Parameters for running PanPhlAn",
+            "default": "",
+            "properties": {
+                "run_panphlan": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run PanPhlAn"
+                },
+                "panphlan_species": {
+                    "type": "string",
+                    "description": "Species to run PanPhlAn on.",
+                    "default": "['']"
+                }
+            },
+            "required": ["run_panphlan", "panphlan_species"]
+        },
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -39,23 +171,6 @@
                     "type": "string",
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
                     "fa_icon": "fas fa-file-signature"
-                }
-            }
-        },
-        "reference_genome_options": {
-            "title": "Reference genome options",
-            "type": "object",
-            "fa_icon": "fas fa-dna",
-            "description": "Reference genome related files and options required for the workflow.",
-            "properties": {
-                "fasta": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/plain",
-                    "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
-                    "description": "Path to FASTA genome file.",
-                    "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
-                    "fa_icon": "far fa-file-code"
                 }
             }
         },
@@ -248,10 +363,22 @@
     },
     "allOf": [
         {
-            "$ref": "#/definitions/input_output_options"
+            "$ref": "#/definitions/kneaddata_options"
         },
         {
-            "$ref": "#/definitions/reference_genome_options"
+            "$ref": "#/definitions/metaphlan_options"
+        },
+        {
+            "$ref": "#/definitions/humann_options"
+        },
+        {
+            "$ref": "#/definitions/strainphlan_options"
+        },
+        {
+            "$ref": "#/definitions/panphlan_options"
+        },
+        {
+            "$ref": "#/definitions/input_output_options"
         },
         {
             "$ref": "#/definitions/institutional_config_options"
@@ -262,23 +389,5 @@
         {
             "$ref": "#/definitions/generic_options"
         }
-    ],
-    "properties": {
-        "download_kneaddata_db": {
-            "type": "boolean"
-        },
-        "kneaddata_db_type": {
-            "type": "string",
-            "default": "human_genome bowtie2"
-        },
-        "kneaddata_db_folder": {
-            "type": "string",
-            "default": "/home/carsonjm/resources/kneaddata/",
-            "format": "directory-path"
-        },
-        "run_kneaddata": {
-            "type": "boolean",
-            "default": true
-        }
-    }
+    ]
 }
