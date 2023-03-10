@@ -24,23 +24,20 @@ process HUMANN_JOINTABLES {
     script:
     def args = task.ext.args ?: ''
     """
-    for file in ${humann_genefamilies}; do ln -s .; done
     humann_join_tables \\
     --input ./ \\
     --output combined_genefamilies.tsv \\
-    --filename genefamilies.tsv
+    --file_name genefamilies.tsv
 
-    for file in ${humann_pathabundance}; do ln -s .; done
     humann_join_tables \\
     --input ./ \\
     --output combined_pathabundance.tsv \\
-    --filename pathabundance.tsv
+    --file_name pathabundance.tsv
 
-    for file in ${humann_pathcoverage}; do ln -s .; done
     humann_join_tables \\
     --input ./ \\
     --output combined_pathcoverage.tsv \\
-    --filename pathcoverage.tsv
+    --file_name pathcoverage.tsv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
