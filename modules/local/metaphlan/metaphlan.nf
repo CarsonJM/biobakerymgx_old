@@ -10,6 +10,7 @@ process METAPHLAN_METAPHLAN {
     input:
     tuple val(meta), path(reads)
     path metaphlan_db_index
+    path metaphlan_db_dir
     val metaphlan_db_version
 
     output:
@@ -29,7 +30,7 @@ process METAPHLAN_METAPHLAN {
     ${prefix}_kneaddata_paired_1.fastq.gz,${prefix}_kneaddata_paired_2.fastq.gz \\
     --input_type fastq \\
     --bowtie2db ${metaphlan_db_dir} \\
-    --index ${params.metaphlan_db_version} \\
+    --index ${metaphlan_db_version} \\
     --bowtie2out ${prefix}.bowtie2.bz2 \\
     --output_file ${prefix}_profile.txt \\
     --samout ${prefix}.sam.bz2 \\

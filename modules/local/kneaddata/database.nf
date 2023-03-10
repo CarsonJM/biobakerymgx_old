@@ -11,7 +11,7 @@ process KNEADDATA_DATABASE {
     val kneaddata_db_type
 
     output:
-    path "kneaddata_database/*.bt2" , emit: kneaddata_db_index
+    path "kneaddata_${params.kneaddata_db_type}/*.bt2" , emit: kneaddata_db_index
     path "versions.yml" , emit: versions
 
     when:
@@ -22,7 +22,7 @@ process KNEADDATA_DATABASE {
 
     """
     kneaddata_database \\
-        --download  ${params.kneaddata_db_type} kneaddata_database
+        --download  ${params.kneaddata_db_type} bowtie2 kneaddata_${params.kneaddata_db_type}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

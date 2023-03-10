@@ -11,7 +11,7 @@ process HUMANN_CHOCOPHLANDB {
     path database_dir
 
     output:
-    path "chocophlan_database/alaS.centroids.v201901_v31.ffn.gz" , emit: chocophlan_db
+    path "humann_databases/chocophlan/alaS.centroids.v201901_v31.ffn.gz" , emit: chocophlan_db
     path "versions.yml" , emit: versions
 
     when:
@@ -22,10 +22,9 @@ process HUMANN_CHOCOPHLANDB {
 
     """
     mkdir -p humann_databases
-    mkdir -p humann_databases/chocophlan
     humann_databases \\
         --download chocophlan full \\
-        humann_databases/chocophlan_database
+        humann_databases
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

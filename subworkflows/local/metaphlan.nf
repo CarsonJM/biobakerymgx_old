@@ -17,7 +17,7 @@ workflow METAPHLAN {
     //
     // If download_metaphlan_db == False, use metaphlan db specified in resources directory
     if ( !params.download_metaphlan_db ) {
-        ch_metaphlan_db_index = file("${params.database_dir}/metaphlan_database/*.bt2")
+        ch_metaphlan_db_index = file("${params.database_dir}/${params.metaphlan_db_version}*.bt2l")
     }
     // If download_metaphlan_db == True, download specified metaphlan db into resources directory
     else {
@@ -26,6 +26,7 @@ workflow METAPHLAN {
         )
         ch_metaphlan_db_index = METAPHLAN_DATABASE.out.metaphlan_db_index
     }
+    ch_metaphlan_db_dir = file("${params.database_dir}/${params.metaphlan_db_version}")
 
     //
     // MODULE: MetaPhlAn4
@@ -35,6 +36,7 @@ workflow METAPHLAN {
         METAPHLAN_METAPHLAN ( 
             ch_preprocessed_short_reads ,
             ch_metaphlan_db_index , 
+            ch_metaphlan_db_dir ,
             params.metaphlan_db_version
         )
 

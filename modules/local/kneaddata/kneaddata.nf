@@ -10,6 +10,7 @@ process KNEADDATA_KNEADDATA {
     input:
     tuple val(meta), path(reads)
     path kneaddata_db_index
+    path kneaddata_db_dir
 
     output:
     tuple val(meta), path("*paired_{1,2}.fastq.gz"), emit: reads
@@ -30,7 +31,7 @@ process KNEADDATA_KNEADDATA {
         --input ${prefix}_2.fastq.gz \\
         --output . \\
         --output-prefix ${prefix}_kneaddata \\
-        --reference-db ${params.database_dir}/kneaddata_database \\
+        --reference-db ${kneaddata_db_dir} \\
         --threads ${task.cpus} \\
         --trimmomatic ${params.trimmomatic_path} \\
         --bypass-trf \\

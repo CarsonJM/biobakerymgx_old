@@ -1,5 +1,5 @@
 process HUMANN_JOINTABLES {
-    tag "$meta.id"
+    tag "humann_join_tables"
     label 'process_single'
 
     conda "bioconda::humann=3.6.1"
@@ -23,7 +23,6 @@ process HUMANN_JOINTABLES {
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     for file in ${humann_genefamilies}; do ln -s .; done
     humann_join_tables \\

@@ -11,7 +11,7 @@ process HUMANN_UNIREFDB {
     path database_dir
 
     output:
-    path "uniref/uniref90_201901b_full.dmnd" , emit: uniref_db
+    path "humann_databases/uniref/uniref90_201901b_full.dmnd" , emit: uniref_db
     path "versions.yml" , emit: versions
 
     when:
@@ -22,10 +22,9 @@ process HUMANN_UNIREFDB {
 
     """
     mkdir -p humann_databases
-    mkdir -p humann_databases/uniref
     humann_databases \\
         --download uniref uniref90_diamond \\
-        humann_databases/uniref
+        humann_databases
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

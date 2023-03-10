@@ -11,7 +11,7 @@ process HUMANN_UTILITYMAPPINGDB {
     path database_dir
 
     output:
-    path "utilitymapping/map_ec_name.txt.gz" , emit: utilitymapping_db
+    path "humann_databases/utilitymapping/map_ec_name.txt.gz" , emit: utilitymapping_db
     path "versions.yml" , emit: versions
 
     when:
@@ -22,10 +22,9 @@ process HUMANN_UTILITYMAPPINGDB {
 
     """
     mkdir -p humann_databases
-    mkdir -p humann_databases/utilitymapping
     humann_databases \\
         --download utility_mapping full \\
-        humann_databases/utilitymapping
+        humann_databases
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

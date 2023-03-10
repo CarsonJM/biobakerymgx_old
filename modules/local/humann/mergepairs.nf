@@ -19,6 +19,7 @@ process HUMANN_MERGEPAIRS {
 
     script:
     def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
     cat ${prefix}_kneaddata_paired_1.fastq.gz ${prefix}_kneaddata_paired_2.fastq.gz > ${prefix}_merged_reads.fastq.gz

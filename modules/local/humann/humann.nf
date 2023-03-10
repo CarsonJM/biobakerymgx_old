@@ -11,8 +11,11 @@ process HUMANN_HUMANN {
     tuple val(meta) , path(reads)
     tuple val(meta) , path(metaphlan_profile)
     path chocophlan_db
+    path chocophlan_db_dir
     path uniref_db
+    path uniref_db_dir
     path utilitymapping_db
+    path utilitymapping_db_dir
 
     output:
     tuple val(meta) , path("*_genefamilies.tsv") , emit: humann_genefamilies
@@ -34,8 +37,8 @@ process HUMANN_HUMANN {
     --threads ${task.cpus} \\
     --taxonomic-profile ${metaphlan_profile} \\
     --input-format fastq.gz \\
-    --nucleotide-database ${params.database_dir}/humann_databases/chocophlan \\
-    --protein-database ${params.database_dir}/humann_databases/uniref \\
+    --nucleotide-database ${chocophlan_db_dir} \\
+    --protein-database ${uniref_db_dir} \\
     --remove-temp-output \\
     --o-log ${prefix}_humann.log \\
     $args

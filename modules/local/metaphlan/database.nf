@@ -11,7 +11,7 @@ process METAPHLAN_DATABASE {
     val metaphlan_db_version
 
     output:
-    path "metaphlan_database/*.bt2l" , emit: metaphlan_db_index
+    path "${params.metaphlan_db_version}/*.bt2l" , emit: metaphlan_db_index
     path "versions.yml" , emit: versions
 
     when:
@@ -23,8 +23,8 @@ process METAPHLAN_DATABASE {
     """
     metaphlan \\
         --install \\
-        --index ${params.metaphlan_db_version} \\
-        --bowtie2db metaphlan_database
+        --index ${metaphlan_db_version} \\
+        --bowtie2db ${metaphlan_db_version}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
