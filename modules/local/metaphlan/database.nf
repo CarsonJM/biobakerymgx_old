@@ -9,11 +9,9 @@ process METAPHLAN_DATABASE {
 
     input:
     val metaphlan_db_version
-    path database_dir
 
     output:
     path "metaphlan_database/*.bt2l" , emit: metaphlan_db_index
-    path "metaphlan_database" , emit: metaphlan_db_dir
     path "versions.yml" , emit: versions
 
     when:

@@ -44,6 +44,7 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { KNEADDATA } from '../subworkflows/local/kneaddata'
 include { METAPHLAN } from '../subworkflows/local/metaphlan'
+include { HUMANN } from '../subworkflows/local/humann'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -91,6 +92,15 @@ workflow BIOBAKERYMGX {
     // Get taxonomic profile of reads
     METAPHLAN (
         KNEADDATA.out.reads
+    )
+
+    //
+    // SUBWORKFLOW: HUMAnN3
+    //
+    // Get functional profile of reads
+    HUMANN (
+        KNEADDATA.out.reads ,
+        METAPHLAN.out.metaphlan_profiles
     )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (

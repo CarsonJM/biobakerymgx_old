@@ -9,11 +9,9 @@ process KNEADDATA_DATABASE {
 
     input:
     val kneaddata_db_type
-    path database_dir
 
     output:
     path "kneaddata_database/*.bt2" , emit: kneaddata_db_index
-    path "kneaddata_database" , emit: kneaddata_db_dir
     path "versions.yml" , emit: versions
 
     when:

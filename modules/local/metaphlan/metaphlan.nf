@@ -10,7 +10,6 @@ process METAPHLAN_METAPHLAN {
     input:
     tuple val(meta), path(reads)
     path metaphlan_db_index
-    path metaphlan_db_dir
     val metaphlan_db_version
 
     output:

@@ -18,16 +18,14 @@ workflow KNEADDATA {
     //
     // If download_kneaddata_db == False, use kneaddata db specified in resources directory
     if ( !params.download_kneaddata_db ) {
-        ch_kneaddata_db_index = file("${params.database_dir}kneaddata/*.bt2")
-        ch_kneaddata_db_dir = file("${params.database_dir}kneaddata")
+        ch_kneaddata_db_index = file("${params.database_dir}/kneaddata/*.bt2")
     }
     // If download_kneaddata_db == True, download specified kneaddata db into resources directory
     else {
         KNEADDATA_DATABASE (
-            params.kneaddata_db_type , params.database_dir
+            params.kneaddata_db_type
         )
         ch_kneaddata_db_index = KNEADDATA_DATABASE.out.kneaddata_db_index
-        ch_kneaddata_db_dir = KNEADDATA_DATABASE.out.kneaddata_db_dir
     }
 
     //
@@ -37,9 +35,7 @@ workflow KNEADDATA {
     if ( params.run_kneaddata ) {
         KNEADDATA_KNEADDATA ( 
             ch_raw_short_reads ,
-            ch_kneaddata_db_index , 
-            ch_kneaddata_db_dir ,
-            params.trimmomatic_path
+            ch_kneaddata_db_index
         )
 
         //
