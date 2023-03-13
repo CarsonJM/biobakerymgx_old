@@ -1,5 +1,5 @@
-process STRAINPHLAN_EXTRACTMARKERS {
-    tag "strainphlan_extract_markers"
+process STRAINPHLAN_SAMPLE2MARKERS {
+    tag "$meta.id"
     label 'process_high'
 
     conda "bioconda::metaphlan=4.0.6"
@@ -8,12 +8,13 @@ process STRAINPHLAN_EXTRACTMARKERS {
         'quay.io/biocontainers/4.0.6--pyhca03a8a_0' }"
 
     input:
+    tuple val(meta), path(sam)
     path metaphlan_db_index
     path metaphlan_db_dir
 
     output:
-    path("db_markers/*.fna"), emit: db_markers
-    path("db_markers/"), emit: db_markers_dir
+    tuple val(meta) , path("consensus_markers/*.pkl"), emit: consensus_markers
+    path("consensus_markers"), emit: consensus_markers_dir
     path "versions.yml" , emit: versions
 
     when:
@@ -21,13 +22,16 @@ process STRAINPHLAN_EXTRACTMARKERS {
 
     script:
     def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    mkdir -p db_markers
-    extract_markers.py \\
-    --clades ${params.strainphlan_species} \\
-    --database ${metaphlan_db_dir}/${params.metaphlan_db_version}.pkl \\
-    --output_dir db_markers \\
-
+    mkdir -p consensus_markers
+    sample2markers.py \\
+    --input ${sam} \\
+    --input_format bz2 \\
+    --output_dir consensus_markers \\
+    --database ${metaphlan_db_dir} \\
+    --nprocs ${task.cpus} \\
+    $args
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

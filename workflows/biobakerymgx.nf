@@ -45,6 +45,7 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { KNEADDATA } from '../subworkflows/local/kneaddata'
 include { METAPHLAN } from '../subworkflows/local/metaphlan'
 include { HUMANN } from '../subworkflows/local/humann'
+include { STRAINPHLAN } from '../subworkflows/local/strainphlan'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -98,14 +99,42 @@ workflow BIOBAKERYMGX {
     // SUBWORKFLOW: HUMAnN3
     //
     // Get functional profile of reads
-    HUMANN (
-        KNEADDATA.out.reads ,
-        METAPHLAN.out.metaphlan_profiles
+    // HUMANN (
+    //     KNEADDATA.out.reads ,
+    //     METAPHLAN.out.metaphlan_profiles
+    // )
+
+
+    //
+    // SUBWORKFLOW: StrainPhlAn4
+    //
+    // Get strain profile
+    STRAINPHLAN (
+        METAPHLAN.out.metaphlan_sams ,
+        METAPHLAN.out.metaphlan_db_index
     )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
+
+    // TODO: Change test dataset to MetaPhlan's
+    // TODO: Add samples2markers module
+    // TODO: Add extract_markers module
+    // TODO: Add strainphlan module
+    // TODO: Add strainphlan subworkflow
+    // TODO: Modify conf/modules.config to publish strainphlan output
+    // TODO: Add panphlan_map module
+    // TODO: Add panphlan_profiling module
+    // TODO: Add panphlan subworkflow
+    // TODO: Modify conf/modules.config to publish panphlan output
+    // TODO: Add extra arguments for KneadData
+    // TODO: Add extra arguments for MetaPhlAn
+    // TODO: Add extra arguments for HUMAnN
+    // TODO: Add extra arguments for StrainPhlAn
+    // TODO: Add extra arguments for PanPhlAn
+    // TODO: Enable Strainphlan and Panphlan to accept multiple species
+
 
     //
     // MODULE: MultiQC

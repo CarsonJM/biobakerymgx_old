@@ -1,5 +1,5 @@
-process STRAINPHLAN_SAMPLES2MARKERS {
-    tag "strainphlan_samples2markers"
+process STRAINPHLAN_STRAINPHLAN {
+    tag "strainphlan"
     label 'process_high'
 
     conda "bioconda::metaphlan=4.0.6"
@@ -8,12 +8,14 @@ process STRAINPHLAN_SAMPLES2MARKERS {
         'quay.io/biocontainers/4.0.6--pyhca03a8a_0' }"
 
     input:
-    path(sam)
-    val metaphlan_db_version
+    path metaphlan_db_index
+    path metaphlan_db_dir
+    path consensus_markers
+    path consensus_markers_dir
+    path db_markers_dir
 
     output:
-    path("consensus_markers/*.pkl"), emit: consensus_markers
-    path("consensus_markers"), emit: consensus_markers_dir
+    path("*"), emit: strainphlan_outputs
     path "versions.yml" , emit: versions
 
     when:
@@ -21,15 +23,17 @@ process STRAINPHLAN_SAMPLES2MARKERS {
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    samples2markers.py \\
-    --input ${sam} \\
-    --input_format bz2 \\
-    --output_dir consensus_markers \\
-    --database ${metaphlan_db_version} \\
+    mkdir -p ${params.strainphlan_species}_output
+    strainphlan \\
+    --database ${metaphlan_db_dir} \\
+    --samples ${consensus_markers} \\
+    --clade_markers ${db_markers_dir}/${params.strainphlan_species}.fna \\
+    --output_dir ${params.strainphlan_species}_output \\
     --nprocs ${task.cpus} \\
+    --clade ${params.strainphlan_species} \\
     $args
+
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
