@@ -1,4 +1,4 @@
-process HUMANN_MERGEPAIRS {
+process HUMANN_MERGEREADS {
     tag "$meta.id"
     label 'process_single'
 
@@ -11,7 +11,7 @@ process HUMANN_MERGEPAIRS {
     tuple val(meta) , path(reads)
 
     output:
-    tuple val(meta) , path("*_merged_reads.fastq.gz") , emit: reads
+    tuple val(meta) , path("*_merged_reads.fastq.gz") , emit: merged_reads
     path "versions.yml" , emit: versions
 
     when:

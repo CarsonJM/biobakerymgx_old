@@ -14,8 +14,6 @@ process HUMANN_HUMANN {
     path chocophlan_db_dir
     path uniref_db
     path uniref_db_dir
-    path utilitymapping_db
-    path utilitymapping_db_dir
 
     output:
     tuple val(meta) , path("*_genefamilies.tsv") , emit: humann_genefamilies
@@ -41,6 +39,8 @@ process HUMANN_HUMANN {
     --protein-database ${uniref_db_dir} \\
     --remove-temp-output \\
     --o-log ${prefix}_humann.log \\
+    --bowtie-options "'${params.humann_bowtie2_options}'" \\
+    --diamond-options "${params.diamond_options}" \\
     $args
 
     cat <<-END_VERSIONS > versions.yml

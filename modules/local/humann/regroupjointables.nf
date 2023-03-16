@@ -1,5 +1,5 @@
-process HUMANN_UNIREFDB {
-    tag 'humann_unirefdb'
+process HUMANN_REGROUPJOINTABLES {
+    tag "humann_join_tables"
     label 'process_single'
 
     conda "bioconda::humann=3.6.1"
@@ -8,11 +8,11 @@ process HUMANN_UNIREFDB {
         'quay.io/biocontainers/humann:3.6.1--pyh7cba7a3_1' }"
 
     input:
-    path database_dir
+    path(ombined_humann_regroup)
+    val regroup_option
 
     output:
-    path "humann_databases/uniref/uniref90_201901b_full.dmnd" , emit: uniref_db
-    path "humann_databases/uniref/" , emit: uniref_db_dir
+    path("combined_${regroup_option}.tsv") , emit: humann_combined_regroup
     path "versions.yml" , emit: versions
 
     when:
@@ -20,12 +20,11 @@ process HUMANN_UNIREFDB {
 
     script:
     def args = task.ext.args ?: ''
-
     """
-    mkdir -p humann_databases
-    humann_databases \\
-        --download uniref uniref90_diamond \\
-        humann_databases
+    humann_join_tables \\
+    --input ./ \\
+    --output combined_${regroup_option}.tsv \\
+    --file_name ${regroup_option}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

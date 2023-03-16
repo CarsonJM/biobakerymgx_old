@@ -11,11 +11,12 @@ process HUMANN_JOINTABLES {
     path(humann_genefamilies)
     path(humann_pathabundance)
     path(humann_pathcoverage)
+    val(renorm)
 
     output:
-    path("combined_genefamilies.tsv") , emit: humann_combined_genefamilies
-    path("combined_pathabundance.tsv") , emit: humann_combined_pathabundance
-    path("combined_pathcoverage.tsv") , emit: humann_combined_pathcoverage
+    path("combined_genefamilies${renorm}.tsv") , emit: humann_combined_genefamilies
+    path("combined_pathabundance${renorm}.tsv") , emit: humann_combined_pathabundance
+    path("combined_pathcoverage${renorm}.tsv") , emit: humann_combined_pathcoverage
     path "versions.yml" , emit: versions
 
     when:
@@ -26,18 +27,18 @@ process HUMANN_JOINTABLES {
     """
     humann_join_tables \\
     --input ./ \\
-    --output combined_genefamilies.tsv \\
-    --file_name genefamilies.tsv
+    --output combined_genefamilies${renorm}.tsv \\
+    --file_name genefamilies
 
     humann_join_tables \\
     --input ./ \\
-    --output combined_pathabundance.tsv \\
-    --file_name pathabundance.tsv
+    --output combined_pathabundance${renorm}.tsv \\
+    --file_name pathabundance
 
     humann_join_tables \\
     --input ./ \\
-    --output combined_pathcoverage.tsv \\
-    --file_name pathcoverage.tsv
+    --output combined_pathcoverage${renorm}.tsv \\
+    --file_name pathcoverage
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -1,6 +1,6 @@
-process HUMANN_UNIREFDB {
-    tag 'humann_unirefdb'
-    label 'process_single'
+process HUMANN_REGROUP {
+    tag "$meta.id"
+    label 'process_high'
 
     conda "bioconda::humann=3.6.1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -8,11 +8,13 @@ process HUMANN_UNIREFDB {
         'quay.io/biocontainers/humann:3.6.1--pyh7cba7a3_1' }"
 
     input:
-    path database_dir
+    path utilitymapping_db
+    path utilitymapping_db_dir
+    tuple val(meta) , path(humann_genefamilies)
+    val regroup_option
 
     output:
-    path "humann_databases/uniref/uniref90_201901b_full.dmnd" , emit: uniref_db
-    path "humann_databases/uniref/" , emit: uniref_db_dir
+    tuple val(meta) , path("*${regroup_option}.tsv") , emit: humann_regrouped
     path "versions.yml" , emit: versions
 
     when:
@@ -20,12 +22,12 @@ process HUMANN_UNIREFDB {
 
     script:
     def args = task.ext.args ?: ''
-
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    mkdir -p humann_databases
-    humann_databases \\
-        --download uniref uniref90_diamond \\
-        humann_databases
+    humann_regroup_table \\
+    --input ${humann_genefamilies} \\
+    --output ${prefix}_${regroup_option}.tsv \\
+    --custom ${utilitymapping_db_dir}/${regroup_option}.txt.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

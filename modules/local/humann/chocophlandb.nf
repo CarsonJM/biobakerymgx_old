@@ -12,6 +12,7 @@ process HUMANN_CHOCOPHLANDB {
 
     output:
     path "humann_databases/chocophlan/alaS.centroids.v201901_v31.ffn.gz" , emit: chocophlan_db
+    path "humann_databases/chocophlan/" , emit: chocophlan_db_dir
     path "versions.yml" , emit: versions
 
     when:
