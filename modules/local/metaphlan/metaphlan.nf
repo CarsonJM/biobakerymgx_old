@@ -34,7 +34,6 @@ process METAPHLAN_METAPHLAN {
     --bowtie2out ${prefix}.bowtie2.bz2 \\
     --output_file ${prefix}_profile.txt \\
     --samout ${prefix}.sam.bz2 \\
-    --unclassified_estimation \\
     --nproc ${task.cpus} \\
     $args
 

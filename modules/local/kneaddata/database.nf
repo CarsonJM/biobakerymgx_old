@@ -23,7 +23,7 @@ process KNEADDATA_DATABASE {
 
     """
     kneaddata_database \\
-        --download $args bowtie2 kneaddata_${params.kneaddata_db_type}
+        --download ${kneaddata_db_type} bowtie2 kneaddata_${kneaddata_db_type}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

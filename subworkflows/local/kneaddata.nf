@@ -14,7 +14,7 @@ workflow KNEADDATA {
     ch_versions = Channel.empty()
 
     //
-    // MODULE: Kneaddata database
+    // MODULE: KneadData database
     //
     KNEADDATA_DATABASE (
         params.kneaddata_db_type
@@ -25,7 +25,6 @@ workflow KNEADDATA {
     //
     // MODULE: KneadData
     //
-    // If run_kneaddata == True, run KneadData and determine read counts
     KNEADDATA_KNEADDATA ( 
         ch_raw_short_reads ,
         ch_kneaddata_db_index ,

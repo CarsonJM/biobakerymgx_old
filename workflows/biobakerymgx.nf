@@ -43,7 +43,7 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { KNEADDATA } from '../subworkflows/local/kneaddata'
-// include { METAPHLAN } from '../subworkflows/local/metaphlan'
+include { METAPHLAN } from '../subworkflows/local/metaphlan'
 // include { HUMANN } from '../subworkflows/local/humann'
 // include { STRAINPHLAN } from '../subworkflows/local/strainphlan'
 // include { PANPHLAN } from '../subworkflows/local/panphlan'
@@ -84,21 +84,25 @@ workflow BIOBAKERYMGX {
     // SUBWORKFLOW: KneadData
     //
     // Trim, quality filter, and remove contaminant reads
-    if ( !params.run_kneaddata ) {
+    if ( params.run_kneaddata ) {
+        KNEADDATA (
+            ch_raw_short_reads
+        )
+        ch_preprocessed_reads = KNEADDATA.out.reads
+    }
+    else {
         ch_preprocessed_reads = INPUT_CHECK.out.raw_short_reads
     }
-    KNEADDATA (
-        ch_raw_short_reads
-        )
-    ch_preprocessed_reads = KNEADDATA.out.reads
 
     //
     // SUBWORKFLOW: MetaPhlAn4
     //
     // Get taxonomic profile of reads
-    // METAPHLAN (
-    //     KNEADDATA.out.reads
-    // )
+    if ( params.run_metaphlan || params.run_humann || params.run_strainphlan ) {
+        METAPHLAN (
+        KNEADDATA.out.reads
+        )
+    }
 
     //
     // SUBWORKFLOW: HUMAnN3

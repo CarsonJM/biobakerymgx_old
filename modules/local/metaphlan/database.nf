@@ -12,6 +12,7 @@ process METAPHLAN_DATABASE {
 
     output:
     path "${params.metaphlan_db_version}/*.bt2l" , emit: metaphlan_db_index
+    path "${params.metaphlan_db_version}/" , emit: metaphlan_db_dir
     path "versions.yml" , emit: versions
 
     when:
