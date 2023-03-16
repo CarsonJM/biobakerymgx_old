@@ -10,56 +10,100 @@
             "type": "object",
             "description": "Parameters for running KneadData",
             "default": "",
-            "fa_icon": "fas fa-dna",
+            "fa_icon": "fab fa-acquisitions-incorporated",
             "properties": {
-                "download_kneaddata_db": {
-                    "type": "boolean",
-                    "description": "Download KneadData contaminant database."
-                },
-                "kneaddata_db_type": {
-                    "type": "string",
-                    "default": "human_genome",
-                    "description": "Type of KneadData contaminant database to be downloaded",
-                    "enum": ["human_genome", "mouse_C57BL"]
-                },
                 "run_kneaddata": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Run KneadData."
+                    "description": "Run KneadData"
+                },
+                "bypass_trim": {
+                    "type": "boolean",
+                    "description": "Bypass running Trimmomatic"
                 },
                 "trimmomatic_path": {
                     "type": "string",
                     "default": "/usr/local/share/trimmomatic-0.39-2",
                     "description": "Path to Trimmomatic executable.",
                     "format": "directory-path"
-                }
-            },
-            "required": ["download_kneaddata_db", "kneaddata_db_type", "run_kneaddata"]
-        },
-        "metaphlan_options": {
-            "title": "MetaPhlAn options",
-            "type": "object",
-            "description": "Parameters for running MetaPhlAn",
-            "default": "",
-            "properties": {
-                "download_metaphlan_db": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Download MetaPhlan."
                 },
-                "metaphlan_db_version": {
+                "run_trim_repetitive": {
+                    "type": "boolean",
+                    "description": "Trim highly repetitive sequences."
+                },
+                "trimmomatic_options": {
                     "type": "string",
-                    "default": "mpa_vJan21_CHOCOPhlAnSGB_202103",
-                    "description": "MetaPhlAn database version.",
-                    "enum": ["mpa_vJan21_CHOCOPhlAnSGB_202103", "mpa_vOct22_CHOCOPhlAnSGB_202212"]
+                    "default": "MINLEN:60 ILLUMINACLIP:/-SE.fa:2:30:10 SLIDINGWINDOW:4:20 MINLEN:50",
+                    "description": "Additional Trimmomatic options."
                 },
-                "run_metaphlan": {
+                "sequencer_source": {
+                    "type": "string",
+                    "default": "NexteraPE",
+                    "description": "Sequencer source."
+                },
+                "kneaddata_db_type": {
+                    "type": "string",
+                    "default": "human_genome",
+                    "description": "Type of KneadData contaminant database to be downloaded.",
+                    "enum": ["human_genome", "mouse_C57BL"]
+                },
+                "bowtie2_options": {
+                    "type": "string",
+                    "default": "--very-sensitive-local",
+                    "description": "Additional bowtie2 options."
+                },
+                "decontaminate_pairs": {
+                    "type": "string",
+                    "default": "strict",
+                    "description": "Method for decontaminating paired-end reads."
+                },
+                "bypass_trf": {
                     "type": "boolean",
                     "default": true,
-                    "description": "Run MetaPhlAn."
+                    "description": "Bypass running Tandem Repeat Finder."
+                },
+                "trf_path": {
+                    "type": "string",
+                    "description": "Path to TRF executable."
+                },
+                "match": {
+                    "type": "integer",
+                    "default": 2
+                },
+                "mismatch": {
+                    "type": "integer",
+                    "default": 7
+                },
+                "delta": {
+                    "type": "integer",
+                    "default": 7
+                },
+                "pm": {
+                    "type": "integer",
+                    "default": 80
+                },
+                "pi": {
+                    "type": "integer",
+                    "default": 10
+                },
+                "minscore": {
+                    "type": "integer",
+                    "default": 50
+                },
+                "maxperiod": {
+                    "type": "integer",
+                    "default": 500
+                },
+                "store_temp_output": {
+                    "type": "boolean",
+                    "description": "Store temporary outputs."
+                },
+                "remove_intermediate_output": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Remove intermediate outputs."
                 }
-            },
-            "required": ["download_metaphlan_db", "metaphlan_db_version", "run_metaphlan"]
+            }
         },
         "humann_options": {
             "title": "HUMAnN options",
@@ -67,82 +111,252 @@
             "description": "Parameters for running HUMAnN",
             "default": "",
             "properties": {
-                "download_chocophlan_db": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Download ChocoPhlan database."
-                },
-                "download_uniref_db": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Download UniRef database."
-                },
-                "download_utility_mapping_db": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Download utility mapping database."
-                },
                 "run_humann": {
                     "type": "boolean",
-                    "default": true,
-                    "description": "Run HUMAnN"
+                    "default": true
+                },
+                "bypass_nucleotide_search": {
+                    "type": "boolean",
+                    "description": "Bypass nucleotide search."
+                },
+                "bypass_prescreen": {
+                    "type": "boolean",
+                    "description": "Bypass taxonomic prescreen and use full ChocoPhlAn database,"
+                },
+                "prescreen_threshold": {
+                    "type": "number",
+                    "default": 0.01
+                },
+                "humann_bowtie2_options": {
+                    "type": "string",
+                    "default": "--very-sensitive"
+                },
+                "nucleotide_identity_threshold": {
+                    "type": "integer",
+                    "default": 0
+                },
+                "nucleotide_query_coverage_threshold": {
+                    "type": "integer",
+                    "default": 90
+                },
+                "nucleotide_subject_coverage_threshold": {
+                    "type": "integer",
+                    "default": 50
+                },
+                "bypass_translated_search": {
+                    "type": "boolean",
+                    "description": "Bypass translated search."
+                },
+                "diamond_options": {
+                    "type": "string",
+                    "default": "--top 1 --outfmt 6",
+                    "description": "Additional DIAMOND options."
+                },
+                "evalue": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Minimum DIAMOND  e-value."
+                },
+                "translated_query_coverage_threshold": {
+                    "type": "integer",
+                    "default": 90
+                },
+                "translated_subject_coverage_threshold": {
+                    "type": "integer",
+                    "default": 50
+                },
+                "gap_fill": {
+                    "type": "string",
+                    "default": "on"
+                },
+                "minpath": {
+                    "type": "string",
+                    "default": "on"
+                },
+                "regroup_gene_families": {
+                    "type": "boolean",
+                    "description": "Regroup gene families."
                 },
                 "regroup_option": {
                     "type": "string",
                     "description": "Define how gene families should be regrouped."
                 },
+                "renorm_output": {
+                    "type": "boolean",
+                    "description": "Normalize HUMAnN3 outputs"
+                },
                 "renorm_option": {
                     "type": "string",
                     "default": "relab",
                     "description": "Define how output data should be normalized."
+                },
+                "remove_temp_output": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Remove temporary outputs."
                 }
             },
-            "required": ["download_chocophlan_db", "download_uniref_db", "download_utility_mapping_db", "run_humann"]
+            "fa_icon": "fab fa-acquisitions-incorporated"
         },
-        "strainphlan_options": {
-            "title": "StrainPhlAn options",
+        "strainphlan": {
+            "title": "StrainPhlAn",
             "type": "object",
-            "description": "Parameters for running StrainPhlAn",
+            "description": "",
             "default": "",
             "properties": {
                 "run_strainphlan": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Run StrainPhlAn."
+                    "type": "boolean"
                 },
                 "strainphlan_species": {
                     "type": "string",
-                    "default": "['']",
-                    "description": "Species to run StrainPhlan on."
+                    "default": "t__SGB1855_group"
+                },
+                "breadth_threshold": {
+                    "type": "integer",
+                    "default": 80
+                },
+                "min_reads_aligning": {
+                    "type": "integer",
+                    "default": 9
+                },
+                "min_base_coverage": {
+                    "type": "integer",
+                    "default": 1
+                },
+                "min_base_quality": {
+                    "type": "integer",
+                    "default": 30
+                },
+                "min_mapping_quality": {
+                    "type": "integer",
+                    "default": 10
+                },
+                "dominant_frq_threshold": {
+                    "type": "number",
+                    "default": 0.8
+                },
+                "references": {
+                    "type": "string"
+                },
+                "secondary_samples": {
+                    "type": "string"
+                },
+                "secondary_reference": {
+                    "type": "string"
+                },
+                "trim_sequences": {
+                    "type": "integer",
+                    "default": 50
+                },
+                "marker_in_n_samples": {
+                    "type": "integer",
+                    "default": 80
+                },
+                "sample_with_n_markers": {
+                    "type": "integer",
+                    "default": 80
+                },
+                "secondary_sample_with_n_markers": {
+                    "type": "integer",
+                    "default": 80
+                },
+                "sample_with_n_markers_after_filt": {
+                    "type": "string",
+                    "default": "NA"
+                },
+                "abs_n_markers_thres": {
+                    "type": "boolean"
+                },
+                "abs_n_samples_thres": {
+                    "type": "boolean"
+                },
+                "breadth_thres": {
+                    "type": "integer",
+                    "default": 80
+                },
+                "phylophlan_mode": {
+                    "type": "string",
+                    "default": "fast"
+                },
+                "mutation_rates": {
+                    "type": "boolean"
+                },
+                "non_interactive": {
+                    "type": "boolean"
+                },
+                "treeshrink": {
+                    "type": "boolean"
                 }
-            },
-            "required": ["run_strainphlan", "strainphlan_species"]
+            }
         },
-        "panphlan_options": {
-            "title": "PanPhlAn options",
+        "panphlan": {
+            "title": "PanPhlan",
             "type": "object",
-            "description": "Parameters for running PanPhlAn",
+            "description": "",
             "default": "",
             "properties": {
                 "run_panphlan": {
                     "type": "boolean",
-                    "default": true,
-                    "description": "Run PanPhlAn"
+                    "default": true
                 },
                 "panphlan_species": {
                     "type": "string",
-                    "description": "Species to run PanPhlAn on.",
-                    "default": "['']"
+                    "default": "Bacteroides_fragilis"
+                },
+                "panphlan_bowtie2_options": {
+                    "type": "string",
+                    "default": "--very-sensitive"
+                },
+                "min_read_length": {
+                    "type": "integer",
+                    "default": 70
+                },
+                "th_mismatches": {
+                    "type": "integer",
+                    "default": 1
+                },
+                "min_coverage": {
+                    "type": "integer",
+                    "default": 2
+                },
+                "left_max": {
+                    "type": "number",
+                    "default": 1.25
+                },
+                "right_min": {
+                    "type": "number",
+                    "default": 0.75
+                },
+                "th_non_present": {
+                    "type": "number",
+                    "default": 0.25
+                },
+                "th_present": {
+                    "type": "number",
+                    "default": 0.5
+                },
+                "th_multicopy": {
+                    "type": "number",
+                    "default": 1.5
+                },
+                "strain_similarity_perc": {
+                    "type": "integer",
+                    "default": 50
+                },
+                "add_ref": {
+                    "type": "boolean"
+                },
+                "func_annot": {
+                    "type": "string"
                 }
-            },
-            "required": ["run_panphlan", "panphlan_species"]
+            }
         },
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "outdir"],
+            "required": ["input", "outdir", "database_dir"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -159,6 +373,13 @@
                     "format": "directory-path",
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
                     "fa_icon": "fas fa-folder-open"
+                },
+                "database_dir": {
+                    "type": "string",
+                    "default": "/gscratch/pedslabs/Labs/Hoffman/resources",
+                    "fa_icon": "fas fa-folder-open",
+                    "description": "The directory where large databases will be saved.",
+                    "format": "directory-path"
                 },
                 "email": {
                     "type": "string",
@@ -335,7 +556,8 @@
                 "multiqc_methods_description": {
                     "type": "string",
                     "description": "Custom MultiQC yaml file containing HTML including a methods description.",
-                    "fa_icon": "fas fa-cog"
+                    "fa_icon": "fas fa-cog",
+                    "hidden": true
                 },
                 "tracedir": {
                     "type": "string",
@@ -366,16 +588,13 @@
             "$ref": "#/definitions/kneaddata_options"
         },
         {
-            "$ref": "#/definitions/metaphlan_options"
-        },
-        {
             "$ref": "#/definitions/humann_options"
         },
         {
-            "$ref": "#/definitions/strainphlan_options"
+            "$ref": "#/definitions/strainphlan"
         },
         {
-            "$ref": "#/definitions/panphlan_options"
+            "$ref": "#/definitions/panphlan"
         },
         {
             "$ref": "#/definitions/input_output_options"
@@ -389,5 +608,92 @@
         {
             "$ref": "#/definitions/generic_options"
         }
-    ]
+    ],
+    "properties": {
+        "fasta": {
+            "type": "string",
+            "default": "None"
+        },
+        "run_metaphlan": {
+            "type": "boolean",
+            "default": true
+        },
+        "metaphlan_db_version": {
+            "type": "string",
+            "default": "mpa_vJan21_CHOCOPhlAnSGB_202103",
+            "description": "MetaPhlAn database version.",
+            "enum": ["mpa_vJan21_CHOCOPhlAnSGB_202103", "mpa_vOct22_CHOCOPhlAnSGB_202212"]
+        },
+        "bt2_ps": {
+            "type": "string",
+            "default": "very-sensitive",
+            "description": "Bowtie2 presets."
+        },
+        "min_mapq_val": {
+            "type": "integer",
+            "default": 5,
+            "description": "Minimum MAPQ values"
+        },
+        "tax_lev": {
+            "type": "string",
+            "default": "a",
+            "description": "Taxonomic level for MetaPhlAn4 assignments."
+        },
+        "min_cu_len": {
+            "type": "integer",
+            "default": 2000
+        },
+        "min_alignment_len": {
+            "type": "string",
+            "default": "None"
+        },
+        "add_viruses": {
+            "type": "boolean"
+        },
+        "ignore_eukaryotes": {
+            "type": "boolean"
+        },
+        "ignore_bacteria": {
+            "type": "boolean"
+        },
+        "ignore_archaea": {
+            "type": "boolean"
+        },
+        "ignore_ksgbs": {
+            "type": "boolean"
+        },
+        "ignore_usgbs": {
+            "type": "boolean"
+        },
+        "stat_q": {
+            "type": "number",
+            "default": 0.2
+        },
+        "perc_nonzero": {
+            "type": "number",
+            "default": 0.33
+        },
+        "ignore_markers": {
+            "type": "string",
+            "default": "None"
+        },
+        "avoid_disqm": {
+            "type": "boolean"
+        },
+        "stat": {
+            "type": "string",
+            "default": "tavg_g",
+            "description": "MetaPhlAn statistics."
+        },
+        "t": {
+            "type": "string",
+            "default": "relab",
+            "description": "Type of analysis."
+        },
+        "unclassified_estimation": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include unclassified estimation."
+        }
+    }
 }

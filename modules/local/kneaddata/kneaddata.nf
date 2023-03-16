@@ -33,8 +33,6 @@ process KNEADDATA_KNEADDATA {
         --output-prefix ${prefix}_kneaddata \\
         --reference-db ${kneaddata_db_dir} \\
         --threads ${task.cpus} \\
-        --trimmomatic ${params.trimmomatic_path} \\
-        --bypass-trf \\
         $args
 
     gzip *.fastq

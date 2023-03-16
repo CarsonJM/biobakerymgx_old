@@ -12,6 +12,7 @@ process KNEADDATA_DATABASE {
 
     output:
     path "kneaddata_${params.kneaddata_db_type}/*.bt2" , emit: kneaddata_db_index
+    path "kneaddata_${params.kneaddata_db_type}/" , emit: kneaddata_db_dir
     path "versions.yml" , emit: versions
 
     when:
@@ -22,7 +23,7 @@ process KNEADDATA_DATABASE {
 
     """
     kneaddata_database \\
-        --download  ${params.kneaddata_db_type} bowtie2 kneaddata_${params.kneaddata_db_type}
+        --download $args bowtie2 kneaddata_${params.kneaddata_db_type}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

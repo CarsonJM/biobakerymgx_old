@@ -88,6 +88,7 @@ workflow HUMANN {
     ch_versions = ch_versions.mix(HUMANN_HUMANN.out.versions.first())
 
     emit:
+    merged_reads = HUMANN_MERGEPAIRS.out.reads
     humann_combined_genefamilies = HUMANN_JOINTABLES.out.humann_combined_genefamilies
     humann_combined_pathabundance = HUMANN_JOINTABLES.out.humann_combined_pathabundance
     humann_combined_pathcoverage = HUMANN_JOINTABLES.out.humann_combined_pathcoverage

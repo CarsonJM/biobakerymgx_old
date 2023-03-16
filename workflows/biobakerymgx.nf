@@ -43,9 +43,10 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { KNEADDATA } from '../subworkflows/local/kneaddata'
-include { METAPHLAN } from '../subworkflows/local/metaphlan'
-include { HUMANN } from '../subworkflows/local/humann'
-include { STRAINPHLAN } from '../subworkflows/local/strainphlan'
+// include { METAPHLAN } from '../subworkflows/local/metaphlan'
+// include { HUMANN } from '../subworkflows/local/humann'
+// include { STRAINPHLAN } from '../subworkflows/local/strainphlan'
+// include { PANPHLAN } from '../subworkflows/local/panphlan'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -83,17 +84,21 @@ workflow BIOBAKERYMGX {
     // SUBWORKFLOW: KneadData
     //
     // Trim, quality filter, and remove contaminant reads
+    if ( !params.run_kneaddata ) {
+        ch_preprocessed_reads = INPUT_CHECK.out.raw_short_reads
+    }
     KNEADDATA (
         ch_raw_short_reads
-    )
+        )
+    ch_preprocessed_reads = KNEADDATA.out.reads
 
     //
     // SUBWORKFLOW: MetaPhlAn4
     //
     // Get taxonomic profile of reads
-    METAPHLAN (
-        KNEADDATA.out.reads
-    )
+    // METAPHLAN (
+    //     KNEADDATA.out.reads
+    // )
 
     //
     // SUBWORKFLOW: HUMAnN3
@@ -103,16 +108,26 @@ workflow BIOBAKERYMGX {
     //     KNEADDATA.out.reads ,
     //     METAPHLAN.out.metaphlan_profiles
     // )
-
+    // ch_merged_reads = HUMANN.out.merged_reads
 
     //
     // SUBWORKFLOW: StrainPhlAn4
     //
     // Get strain profile
-    STRAINPHLAN (
-        METAPHLAN.out.metaphlan_sams ,
-        METAPHLAN.out.metaphlan_db_index
-    )
+    // STRAINPHLAN (
+    //     METAPHLAN.out.metaphlan_sams ,
+    //     METAPHLAN.out.metaphlan_db_index
+    // )
+
+
+    //
+    // SUBWORKFLOW: PanPhlAn3
+    //
+    // Get gene profile
+    // PANPHLAN (
+    //     ch_merged_reads ,
+        
+    // )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
