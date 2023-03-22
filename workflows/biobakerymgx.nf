@@ -115,9 +115,9 @@ workflow BIOBAKERYMGX {
         )
         ch_merged_reads = HUMANN.out.merged_reads
     }
-    else {
-        ch_merged_reads = HUMANN_MERGEREADS.out.merged_reads
-    }
+    // else {
+    //     ch_merged_reads = HUMANN_MERGEREADS.out.merged_reads
+    // }
 
 
 
