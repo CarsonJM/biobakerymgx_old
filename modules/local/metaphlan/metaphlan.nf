@@ -25,6 +25,7 @@ process METAPHLAN_METAPHLAN {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def bowtie2_options = params.mpa_bt2_ps ? "--bt2_ps '${params.mpa_bt2_ps}'" : ""
     """
     metaphlan \\
     ${prefix}_kneaddata_paired_1.fastq.gz,${prefix}_kneaddata_paired_2.fastq.gz \\
@@ -35,6 +36,7 @@ process METAPHLAN_METAPHLAN {
     --output_file ${prefix}_profile.txt \\
     --samout ${prefix}.sam.bz2 \\
     --nproc ${task.cpus} \\
+    $bowtie2_options \\
     $args
 
     cat <<-END_VERSIONS > versions.yml

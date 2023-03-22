@@ -28,6 +28,8 @@ process HUMANN_HUMANN {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def bowtie2_options = params.hum_humann_bowtie2_options ? "--bowtie-options '${params.humann_bowtie2_options}'" : ""
+    def diamond_options = params.hum_diamond_options ? "--diamond-options '${params.diamond_options}'" : ""
     """
     humann \\
     --input ${prefix}_merged_reads.fastq.gz \\
@@ -37,10 +39,9 @@ process HUMANN_HUMANN {
     --input-format fastq.gz \\
     --nucleotide-database ${chocophlan_db_dir} \\
     --protein-database ${uniref_db_dir} \\
-    --remove-temp-output \\
     --o-log ${prefix}_humann.log \\
-    --bowtie-options "'${params.humann_bowtie2_options}'" \\
-    --diamond-options "${params.diamond_options}" \\
+    $bowtie2_options \\
+    $diamond_options \\
     $args
 
     cat <<-END_VERSIONS > versions.yml

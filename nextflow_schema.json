@@ -5,352 +5,6 @@
     "description": "Pipeline implementing biobakery tools fmicrobiome analysis of shotgun metagenomic sequences",
     "type": "object",
     "definitions": {
-        "kneaddata_options": {
-            "title": "KneadData options",
-            "type": "object",
-            "description": "Parameters for running KneadData",
-            "default": "",
-            "fa_icon": "fab fa-acquisitions-incorporated",
-            "properties": {
-                "run_kneaddata": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Run KneadData"
-                },
-                "bypass_trim": {
-                    "type": "boolean",
-                    "description": "Bypass running Trimmomatic"
-                },
-                "trimmomatic_path": {
-                    "type": "string",
-                    "default": "/usr/local/share/trimmomatic-0.39-2",
-                    "description": "Path to Trimmomatic executable.",
-                    "format": "directory-path"
-                },
-                "run_trim_repetitive": {
-                    "type": "boolean",
-                    "description": "Trim highly repetitive sequences."
-                },
-                "trimmomatic_options": {
-                    "type": "string",
-                    "default": "MINLEN:60 ILLUMINACLIP:/-SE.fa:2:30:10 SLIDINGWINDOW:4:20 MINLEN:50",
-                    "description": "Additional Trimmomatic options."
-                },
-                "sequencer_source": {
-                    "type": "string",
-                    "default": "NexteraPE",
-                    "description": "Sequencer source."
-                },
-                "kneaddata_db_type": {
-                    "type": "string",
-                    "default": "human_genome",
-                    "description": "Type of KneadData contaminant database to be downloaded.",
-                    "enum": ["human_genome", "mouse_C57BL"]
-                },
-                "bowtie2_options": {
-                    "type": "string",
-                    "default": "--very-sensitive-local",
-                    "description": "Additional bowtie2 options."
-                },
-                "decontaminate_pairs": {
-                    "type": "string",
-                    "default": "strict",
-                    "description": "Method for decontaminating paired-end reads."
-                },
-                "bypass_trf": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Bypass running Tandem Repeat Finder."
-                },
-                "trf_path": {
-                    "type": "string",
-                    "description": "Path to TRF executable."
-                },
-                "match": {
-                    "type": "integer",
-                    "default": 2
-                },
-                "mismatch": {
-                    "type": "integer",
-                    "default": 7
-                },
-                "delta": {
-                    "type": "integer",
-                    "default": 7
-                },
-                "pm": {
-                    "type": "integer",
-                    "default": 80
-                },
-                "pi": {
-                    "type": "integer",
-                    "default": 10
-                },
-                "minscore": {
-                    "type": "integer",
-                    "default": 50
-                },
-                "maxperiod": {
-                    "type": "integer",
-                    "default": 500
-                },
-                "store_temp_output": {
-                    "type": "boolean",
-                    "description": "Store temporary outputs."
-                },
-                "remove_intermediate_output": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Remove intermediate outputs."
-                }
-            }
-        },
-        "humann_options": {
-            "title": "HUMAnN options",
-            "type": "object",
-            "description": "Parameters for running HUMAnN",
-            "default": "",
-            "properties": {
-                "run_humann": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "bypass_nucleotide_search": {
-                    "type": "boolean",
-                    "description": "Bypass nucleotide search."
-                },
-                "bypass_prescreen": {
-                    "type": "boolean",
-                    "description": "Bypass taxonomic prescreen and use full ChocoPhlAn database,"
-                },
-                "prescreen_threshold": {
-                    "type": "number",
-                    "default": 0.01
-                },
-                "humann_bowtie2_options": {
-                    "type": "string",
-                    "default": "--very-sensitive"
-                },
-                "nucleotide_identity_threshold": {
-                    "type": "integer",
-                    "default": 0
-                },
-                "nucleotide_query_coverage_threshold": {
-                    "type": "integer",
-                    "default": 90
-                },
-                "nucleotide_subject_coverage_threshold": {
-                    "type": "integer",
-                    "default": 50
-                },
-                "bypass_translated_search": {
-                    "type": "boolean",
-                    "description": "Bypass translated search."
-                },
-                "diamond_options": {
-                    "type": "string",
-                    "default": "--top 1 --outfmt 6",
-                    "description": "Additional DIAMOND options."
-                },
-                "evalue": {
-                    "type": "integer",
-                    "default": 1,
-                    "description": "Minimum DIAMOND  e-value."
-                },
-                "translated_query_coverage_threshold": {
-                    "type": "integer",
-                    "default": 90
-                },
-                "translated_subject_coverage_threshold": {
-                    "type": "integer",
-                    "default": 50
-                },
-                "gap_fill": {
-                    "type": "string",
-                    "default": "on"
-                },
-                "minpath": {
-                    "type": "string",
-                    "default": "on"
-                },
-                "regroup_gene_families": {
-                    "type": "boolean",
-                    "description": "Regroup gene families."
-                },
-                "regroup_option": {
-                    "type": "string",
-                    "description": "Define how gene families should be regrouped."
-                },
-                "renorm_output": {
-                    "type": "boolean",
-                    "description": "Normalize HUMAnN3 outputs"
-                },
-                "renorm_option": {
-                    "type": "string",
-                    "default": "relab",
-                    "description": "Define how output data should be normalized."
-                },
-                "remove_temp_output": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Remove temporary outputs."
-                }
-            },
-            "fa_icon": "fab fa-acquisitions-incorporated"
-        },
-        "strainphlan": {
-            "title": "StrainPhlAn",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "run_strainphlan": {
-                    "type": "boolean"
-                },
-                "strainphlan_species": {
-                    "type": "string",
-                    "default": "t__SGB1855_group"
-                },
-                "breadth_threshold": {
-                    "type": "integer",
-                    "default": 80
-                },
-                "min_reads_aligning": {
-                    "type": "integer",
-                    "default": 9
-                },
-                "min_base_coverage": {
-                    "type": "integer",
-                    "default": 1
-                },
-                "min_base_quality": {
-                    "type": "integer",
-                    "default": 30
-                },
-                "min_mapping_quality": {
-                    "type": "integer",
-                    "default": 10
-                },
-                "dominant_frq_threshold": {
-                    "type": "number",
-                    "default": 0.8
-                },
-                "references": {
-                    "type": "string"
-                },
-                "secondary_samples": {
-                    "type": "string"
-                },
-                "secondary_reference": {
-                    "type": "string"
-                },
-                "trim_sequences": {
-                    "type": "integer",
-                    "default": 50
-                },
-                "marker_in_n_samples": {
-                    "type": "integer",
-                    "default": 80
-                },
-                "sample_with_n_markers": {
-                    "type": "integer",
-                    "default": 80
-                },
-                "secondary_sample_with_n_markers": {
-                    "type": "integer",
-                    "default": 80
-                },
-                "sample_with_n_markers_after_filt": {
-                    "type": "string",
-                    "default": "NA"
-                },
-                "abs_n_markers_thres": {
-                    "type": "boolean"
-                },
-                "abs_n_samples_thres": {
-                    "type": "boolean"
-                },
-                "breadth_thres": {
-                    "type": "integer",
-                    "default": 80
-                },
-                "phylophlan_mode": {
-                    "type": "string",
-                    "default": "fast"
-                },
-                "mutation_rates": {
-                    "type": "boolean"
-                },
-                "non_interactive": {
-                    "type": "boolean"
-                },
-                "treeshrink": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "panphlan": {
-            "title": "PanPhlan",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "run_panphlan": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "panphlan_species": {
-                    "type": "string",
-                    "default": "Bacteroides_fragilis"
-                },
-                "panphlan_bowtie2_options": {
-                    "type": "string",
-                    "default": "--very-sensitive"
-                },
-                "min_read_length": {
-                    "type": "integer",
-                    "default": 70
-                },
-                "th_mismatches": {
-                    "type": "integer",
-                    "default": 1
-                },
-                "min_coverage": {
-                    "type": "integer",
-                    "default": 2
-                },
-                "left_max": {
-                    "type": "number",
-                    "default": 1.25
-                },
-                "right_min": {
-                    "type": "number",
-                    "default": 0.75
-                },
-                "th_non_present": {
-                    "type": "number",
-                    "default": 0.25
-                },
-                "th_present": {
-                    "type": "number",
-                    "default": 0.5
-                },
-                "th_multicopy": {
-                    "type": "number",
-                    "default": 1.5
-                },
-                "strain_similarity_perc": {
-                    "type": "integer",
-                    "default": 50
-                },
-                "add_ref": {
-                    "type": "boolean"
-                },
-                "func_annot": {
-                    "type": "string"
-                }
-            }
-        },
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -365,7 +19,7 @@
                     "pattern": "^\\S+\\.csv$",
                     "schema": "assets/schema_input.json",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/biobakerymgx/usage#samplesheet-input).",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "outdir": {
@@ -377,8 +31,7 @@
                 "database_dir": {
                     "type": "string",
                     "default": "/gscratch/pedslabs/Labs/Hoffman/resources",
-                    "fa_icon": "fas fa-folder-open",
-                    "description": "The directory where large databases will be saved.",
+                    "description": "The directory where downloaded databases will be saved.",
                     "format": "directory-path"
                 },
                 "email": {
@@ -392,6 +45,285 @@
                     "type": "string",
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
                     "fa_icon": "fas fa-file-signature"
+                }
+            }
+        },
+        "kneaddata_options": {
+            "title": "KneadData options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "run_kneaddata": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run KneadData."
+                },
+                "kneaddata_db_type": {
+                    "type": "string",
+                    "default": "human_genome",
+                    "description": "The type of KneadData contaminant database to be used."
+                },
+                "kd_bypass_trim": {
+                    "type": "boolean"
+                },
+                "kd_run_trim_repetitive": {
+                    "type": "boolean"
+                },
+                "kd_trimmomatic_path": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_trimmomatic_options": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_sequencer_source": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_bowtie2_options": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_decontaminate_pairs": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_bypass_trf": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "kd_trf_path": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_match": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_mismatch": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_delta": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_pm": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_pi": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_minscore": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_maxperiod": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_store_temp_output": {
+                    "type": "boolean"
+                },
+                "kd_remove_intermediate_output": {
+                    "type": "boolean",
+                    "default": true
+                }
+            },
+            "required": ["run_kneaddata"]
+        },
+        "metaphlan_options": {
+            "title": "MetaPhlAn options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "run_metaphlan": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run MetaPhlAn"
+                },
+                "metaphlan_db_version": {
+                    "type": "string",
+                    "default": "mpa_vJan21_CHOCOPhlAnSGB_202103",
+                    "description": "MetaPhlan database version to use.",
+                    "enum": ["mpa_vJan21_CHOCOPhlAnSGB_202103", "mpa_vOct22_CHOCOPhlAnSGB_202212"]
+                },
+                "mpa_bt2_ps": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mpa_min_mapq_val": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mpa_tax_lev": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mpa_min_cu_len": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mpa_min_alignment_len": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mpa_add_viruses": {
+                    "type": "boolean"
+                },
+                "mpa_ignore_eukaryotes": {
+                    "type": "boolean"
+                },
+                "mpa_ignore_bacteria": {
+                    "type": "boolean"
+                },
+                "mpa_ignore_archaea": {
+                    "type": "boolean"
+                },
+                "mpa_ignore_ksgbs": {
+                    "type": "boolean"
+                },
+                "mpa_ignore_usgbs": {
+                    "type": "boolean"
+                },
+                "mpa_stat_q": {
+                    "type": "boolean"
+                },
+                "mpa_perc_nonzero": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mpa_ignore_markers": {
+                    "type": "boolean"
+                },
+                "mpa_file_w_markers_to_ignore": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mpa_avoid_disqm": {
+                    "type": "boolean"
+                },
+                "mpa_stat": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mpa_t": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mpa_unclassified_estimation": {
+                    "type": "boolean",
+                    "default": true
+                }
+            },
+            "required": ["run_metaphlan"]
+        },
+        "humann_options": {
+            "title": "HUMAnN options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "run_humann": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run HUMAnN"
+                },
+                "hum_bypass_nucleotide_search": {
+                    "type": "boolean"
+                },
+                "hum_bypass_prescreen": {
+                    "type": "boolean"
+                },
+                "hum_prescreen_threshold": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_humann_bowtie2_options": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_nucleotide_identity_threshold": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_nucleotide_query_coverage_threshold": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_nucleotide_subject_coverage_threshold": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_bypass_translated_search": {
+                    "type": "boolean"
+                },
+                "hum_diamond_options": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_evalue": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_translated_query_coverage_threshold": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_translated_subject_coverage_threshold": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_gap_fill": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_minpath": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_remove_temp_output": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "hum_regroup_gene_families": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "hum_regroup_option": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_renorm_output": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "hum_renorm_option": {
+                    "type": "string",
+                    "default": "None"
+                }
+            },
+            "required": ["run_humann"]
+        },
+        "reference_genome_options": {
+            "title": "Reference genome options",
+            "type": "object",
+            "fa_icon": "fas fa-dna",
+            "description": "Reference genome related files and options required for the workflow.",
+            "properties": {
+                "fasta": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
+                    "description": "Path to FASTA genome file.",
+                    "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
+                    "fa_icon": "far fa-file-code"
                 }
             }
         },
@@ -556,8 +488,7 @@
                 "multiqc_methods_description": {
                     "type": "string",
                     "description": "Custom MultiQC yaml file containing HTML including a methods description.",
-                    "fa_icon": "fas fa-cog",
-                    "hidden": true
+                    "fa_icon": "fas fa-cog"
                 },
                 "tracedir": {
                     "type": "string",
@@ -585,19 +516,19 @@
     },
     "allOf": [
         {
+            "$ref": "#/definitions/input_output_options"
+        },
+        {
             "$ref": "#/definitions/kneaddata_options"
+        },
+        {
+            "$ref": "#/definitions/metaphlan_options"
         },
         {
             "$ref": "#/definitions/humann_options"
         },
         {
-            "$ref": "#/definitions/strainphlan"
-        },
-        {
-            "$ref": "#/definitions/panphlan"
-        },
-        {
-            "$ref": "#/definitions/input_output_options"
+            "$ref": "#/definitions/reference_genome_options"
         },
         {
             "$ref": "#/definitions/institutional_config_options"
@@ -608,92 +539,5 @@
         {
             "$ref": "#/definitions/generic_options"
         }
-    ],
-    "properties": {
-        "fasta": {
-            "type": "string",
-            "default": "None"
-        },
-        "run_metaphlan": {
-            "type": "boolean",
-            "default": true
-        },
-        "metaphlan_db_version": {
-            "type": "string",
-            "default": "mpa_vJan21_CHOCOPhlAnSGB_202103",
-            "description": "MetaPhlAn database version.",
-            "enum": ["mpa_vJan21_CHOCOPhlAnSGB_202103", "mpa_vOct22_CHOCOPhlAnSGB_202212"]
-        },
-        "bt2_ps": {
-            "type": "string",
-            "default": "very-sensitive",
-            "description": "Bowtie2 presets."
-        },
-        "min_mapq_val": {
-            "type": "integer",
-            "default": 5,
-            "description": "Minimum MAPQ values"
-        },
-        "tax_lev": {
-            "type": "string",
-            "default": "a",
-            "description": "Taxonomic level for MetaPhlAn4 assignments."
-        },
-        "min_cu_len": {
-            "type": "integer",
-            "default": 2000
-        },
-        "min_alignment_len": {
-            "type": "string",
-            "default": "None"
-        },
-        "add_viruses": {
-            "type": "boolean"
-        },
-        "ignore_eukaryotes": {
-            "type": "boolean"
-        },
-        "ignore_bacteria": {
-            "type": "boolean"
-        },
-        "ignore_archaea": {
-            "type": "boolean"
-        },
-        "ignore_ksgbs": {
-            "type": "boolean"
-        },
-        "ignore_usgbs": {
-            "type": "boolean"
-        },
-        "stat_q": {
-            "type": "number",
-            "default": 0.2
-        },
-        "perc_nonzero": {
-            "type": "number",
-            "default": 0.33
-        },
-        "ignore_markers": {
-            "type": "string",
-            "default": "None"
-        },
-        "avoid_disqm": {
-            "type": "boolean"
-        },
-        "stat": {
-            "type": "string",
-            "default": "tavg_g",
-            "description": "MetaPhlAn statistics."
-        },
-        "t": {
-            "type": "string",
-            "default": "relab",
-            "description": "Type of analysis."
-        },
-        "unclassified_estimation": {
-            "type": "boolean",
-            "default": true,
-            "description": "Include unclassified estimation."
-        }
-    }
+    ]
 }
