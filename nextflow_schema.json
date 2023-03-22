@@ -10,7 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "outdir"],
+            "required": ["input", "outdir", "database_dir"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -19,7 +19,7 @@
                     "pattern": "^\\S+\\.csv$",
                     "schema": "assets/schema_input.json",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/biobakerymgx/usage#samplesheet-input).",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "outdir": {
@@ -27,6 +27,12 @@
                     "format": "directory-path",
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
                     "fa_icon": "fas fa-folder-open"
+                },
+                "database_dir": {
+                    "type": "string",
+                    "default": "/gscratch/pedslabs/Labs/Hoffman/resources",
+                    "description": "The directory where downloaded databases will be saved.",
+                    "format": "directory-path"
                 },
                 "email": {
                     "type": "string",
@@ -41,6 +47,268 @@
                     "fa_icon": "fas fa-file-signature"
                 }
             }
+        },
+        "kneaddata_options": {
+            "title": "KneadData options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "run_kneaddata": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run KneadData."
+                },
+                "kneaddata_db_type": {
+                    "type": "string",
+                    "default": "human_genome",
+                    "description": "The type of KneadData contaminant database to be used."
+                },
+                "kd_bypass_trim": {
+                    "type": "boolean"
+                },
+                "kd_run_trim_repetitive": {
+                    "type": "boolean"
+                },
+                "kd_trimmomatic_path": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_trimmomatic_options": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_sequencer_source": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_bowtie2_options": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_decontaminate_pairs": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_bypass_trf": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "kd_trf_path": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_match": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_mismatch": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_delta": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_pm": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_pi": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_minscore": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_maxperiod": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "kd_store_temp_output": {
+                    "type": "boolean"
+                },
+                "kd_remove_intermediate_output": {
+                    "type": "boolean",
+                    "default": true
+                }
+            },
+            "required": ["run_kneaddata"]
+        },
+        "metaphlan_options": {
+            "title": "MetaPhlAn options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "run_metaphlan": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run MetaPhlAn"
+                },
+                "metaphlan_db_version": {
+                    "type": "string",
+                    "default": "mpa_vJan21_CHOCOPhlAnSGB_202103",
+                    "description": "MetaPhlan database version to use.",
+                    "enum": ["mpa_vJan21_CHOCOPhlAnSGB_202103", "mpa_vOct22_CHOCOPhlAnSGB_202212"]
+                },
+                "mpa_bt2_ps": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mpa_min_mapq_val": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mpa_tax_lev": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mpa_min_cu_len": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mpa_min_alignment_len": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mpa_add_viruses": {
+                    "type": "boolean"
+                },
+                "mpa_ignore_eukaryotes": {
+                    "type": "boolean"
+                },
+                "mpa_ignore_bacteria": {
+                    "type": "boolean"
+                },
+                "mpa_ignore_archaea": {
+                    "type": "boolean"
+                },
+                "mpa_ignore_ksgbs": {
+                    "type": "boolean"
+                },
+                "mpa_ignore_usgbs": {
+                    "type": "boolean"
+                },
+                "mpa_stat_q": {
+                    "type": "boolean"
+                },
+                "mpa_perc_nonzero": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mpa_ignore_markers": {
+                    "type": "boolean"
+                },
+                "mpa_file_w_markers_to_ignore": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mpa_avoid_disqm": {
+                    "type": "boolean"
+                },
+                "mpa_stat": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mpa_t": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "mpa_unclassified_estimation": {
+                    "type": "boolean",
+                    "default": true
+                }
+            },
+            "required": ["run_metaphlan"]
+        },
+        "humann_options": {
+            "title": "HUMAnN options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "run_humann": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Run HUMAnN"
+                },
+                "hum_bypass_nucleotide_search": {
+                    "type": "boolean"
+                },
+                "hum_bypass_prescreen": {
+                    "type": "boolean"
+                },
+                "hum_prescreen_threshold": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_humann_bowtie2_options": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_nucleotide_identity_threshold": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_nucleotide_query_coverage_threshold": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_nucleotide_subject_coverage_threshold": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_bypass_translated_search": {
+                    "type": "boolean"
+                },
+                "hum_diamond_options": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_evalue": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_translated_query_coverage_threshold": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_translated_subject_coverage_threshold": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_gap_fill": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_minpath": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_remove_temp_output": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "hum_regroup_gene_families": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "hum_regroup_option": {
+                    "type": "string",
+                    "default": "None"
+                },
+                "hum_renorm_output": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "hum_renorm_option": {
+                    "type": "string",
+                    "default": "None"
+                }
+            },
+            "required": ["run_humann"]
         },
         "reference_genome_options": {
             "title": "Reference genome options",
@@ -251,6 +519,15 @@
             "$ref": "#/definitions/input_output_options"
         },
         {
+            "$ref": "#/definitions/kneaddata_options"
+        },
+        {
+            "$ref": "#/definitions/metaphlan_options"
+        },
+        {
+            "$ref": "#/definitions/humann_options"
+        },
+        {
             "$ref": "#/definitions/reference_genome_options"
         },
         {
@@ -262,23 +539,5 @@
         {
             "$ref": "#/definitions/generic_options"
         }
-    ],
-    "properties": {
-        "download_kneaddata_db": {
-            "type": "boolean"
-        },
-        "kneaddata_db_type": {
-            "type": "string",
-            "default": "human_genome bowtie2"
-        },
-        "kneaddata_db_folder": {
-            "type": "string",
-            "default": "/home/carsonjm/resources/kneaddata/",
-            "format": "directory-path"
-        },
-        "run_kneaddata": {
-            "type": "boolean",
-            "default": true
-        }
-    }
+    ]
 }

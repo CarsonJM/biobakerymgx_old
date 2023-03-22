@@ -35,15 +35,19 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 */
 
 //
-// MODULE: Consisting of local modules
+// MODULES: Consisting of local modules
 //
-include { KNEADDATA_DATABASE } from '../modules/local/kneaddata/database'
-include { KNEADDATA_KNEADDATA } from '../modules/local/kneaddata/kneaddata'
+include { HUMANN_MERGEREADS } from '../modules/local/humann/mergereads.nf'
 
 //
-// SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
+// SUBWORKFLOWS Consisting of a mix of local and nf-core/modules
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
+include { KNEADDATA } from '../subworkflows/local/kneaddata'
+include { METAPHLAN } from '../subworkflows/local/metaphlan'
+include { HUMANN } from '../subworkflows/local/humann'
+// include { STRAINPHLAN } from '../subworkflows/local/strainphlan'
+// include { PANPHLAN } from '../subworkflows/local/panphlan'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,7 +56,7 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 */
 
 //
-// MODULE: Installed directly from nf-core/modules
+// MODULES: Installed directly from nf-core/modules
 //
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
@@ -71,41 +75,92 @@ workflow BIOBAKERYMGX {
     ch_versions = Channel.empty()
 
     //
-    // SUBWORKFLOW: Read in samplesheet, validate and stage input files
+    // SUBWORKFLOW: input check
     //
+    // Check to make sure that all inputs are correct
     INPUT_CHECK ()
     ch_raw_short_reads = INPUT_CHECK.out.raw_short_reads
 
     //
-    // MODULE: Download KneadData database
+    // SUBWORKFLOW: KneadData
     //
-    if ( !params.download_kneaddata_db ) {
-        ch_kneaddata_db_index = file("${params.database_dir}kneaddata/*.bt2")
-        ch_kneaddata_db_dir = file("${params.database_dir}kneaddata")
+    // Trim, quality filter, and remove contaminant reads
+    if ( params.run_kneaddata ) {
+        KNEADDATA (
+            ch_raw_short_reads
+        )
+        ch_preprocessed_reads = KNEADDATA.out.reads
     }
     else {
-        KNEADDATA_DATABASE (
-            params.kneaddata_db_type , params.database_dir
-        )
-        ch_kneaddata_db_index = KNEADDATA_DATABASE.out.kneaddata_db_index
-        ch_kneaddata_db_dir = KNEADDATA_DATABASE.out.kneaddata_db_dir
-        ch_versions = ch_versions.mix(KNEADDATA_DATABASE.out.versions.first())
+        ch_preprocessed_reads = INPUT_CHECK.out.raw_short_reads
     }
 
     //
-    // MODULE: Run KneadData
+    // SUBWORKFLOW: MetaPhlAn4
     //
-    if ( params.run_kneaddata ) {
-        KNEADDATA_KNEADDATA ( 
-        ch_raw_short_reads ,
-        ch_kneaddata_db_index , 
-        ch_kneaddata_db_dir ,
-        params.trimmomatic_path )
+    // Get taxonomic profile of reads
+    if ( params.run_metaphlan || params.run_humann || params.run_strainphlan ) {
+        METAPHLAN (
+            ch_preprocessed_reads
+        )
     }
+
+    //
+    // SUBWORKFLOW: HUMAnN3
+    //
+    if ( params.run_humann ) {
+        HUMANN (
+            ch_preprocessed_reads ,
+            METAPHLAN.out.metaphlan_profiles
+        )
+        ch_merged_reads = HUMANN.out.merged_reads
+    }
+    else {
+        ch_merged_reads = HUMANN_MERGEREADS.out.merged_reads
+    }
+
+
+
+    //
+    // SUBWORKFLOW: StrainPhlAn4
+    //
+    // Get strain profile
+    // STRAINPHLAN (
+    //     METAPHLAN.out.metaphlan_sams ,
+    //     METAPHLAN.out.metaphlan_db_index
+    // )
+
+
+    //
+    // SUBWORKFLOW: PanPhlAn3
+    //
+    // Get gene profile
+    // PANPHLAN (
+    //     ch_merged_reads ,
+        
+    // )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
+
+    // TODO: Change test dataset to MetaPhlan's
+    // TODO: Add samples2markers module
+    // TODO: Add extract_markers module
+    // TODO: Add strainphlan module
+    // TODO: Add strainphlan subworkflow
+    // TODO: Modify conf/modules.config to publish strainphlan output
+    // TODO: Add panphlan_map module
+    // TODO: Add panphlan_profiling module
+    // TODO: Add panphlan subworkflow
+    // TODO: Modify conf/modules.config to publish panphlan output
+    // TODO: Add extra arguments for KneadData
+    // TODO: Add extra arguments for MetaPhlAn
+    // TODO: Add extra arguments for HUMAnN
+    // TODO: Add extra arguments for StrainPhlAn
+    // TODO: Add extra arguments for PanPhlAn
+    // TODO: Enable Strainphlan and Panphlan to accept multiple species
+
 
     //
     // MODULE: MultiQC

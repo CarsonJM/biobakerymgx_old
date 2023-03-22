@@ -1,5 +1,5 @@
-process KNEADDATA_DATABASE {
-    tag 'kneaddata_database'
+process KNEADDATA_COMBINEREADCOUNTS {
+    tag 'kneaddata_combine_read_counts'
     label 'process_single'
 
     conda "bioconda::kneaddata=0.10.0"
@@ -8,12 +8,10 @@ process KNEADDATA_DATABASE {
         'quay.io/biocontainers/kneaddata:0.10.0--pyhdfd78af_0' }"
 
     input:
-    val kneaddata_db_type
+    path(kneaddata_read_count_table)
 
     output:
-    path "kneaddata_${params.kneaddata_db_type}/*.bt2" , emit: kneaddata_db_index
-    path "kneaddata_${params.kneaddata_db_type}/" , emit: kneaddata_db_dir
-    path "versions.yml" , emit: versions
+    path "combined_read_count_table.tsv" , emit: kneaddata_combined_read_count_table
 
     when:
     task.ext.when == null || task.ext.when
@@ -22,8 +20,7 @@ process KNEADDATA_DATABASE {
     def args = task.ext.args ?: ''
 
     """
-    kneaddata_database \\
-        --download ${kneaddata_db_type} bowtie2 kneaddata_${kneaddata_db_type}
+    awk 'FNR>1 || NR==1' ${kneaddata_read_count_table} > combined_read_count_table.tsv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

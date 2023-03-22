@@ -1,5 +1,5 @@
-process KNEADDATA_DATABASE {
-    tag 'kneaddata_database'
+process KNEADDATA_READCOUNTS {
+    tag "$meta.id"
     label 'process_single'
 
     conda "bioconda::kneaddata=0.10.0"
@@ -8,22 +8,24 @@ process KNEADDATA_DATABASE {
         'quay.io/biocontainers/kneaddata:0.10.0--pyhdfd78af_0' }"
 
     input:
-    val kneaddata_db_type
+    tuple val(meta) , path(kneaddata_log)
 
     output:
-    path "kneaddata_${params.kneaddata_db_type}/*.bt2" , emit: kneaddata_db_index
-    path "kneaddata_${params.kneaddata_db_type}/" , emit: kneaddata_db_dir
-    path "versions.yml" , emit: versions
+    tuple val(meta) , path("*_read_count_table.tsv") , emit: kneaddata_read_count_table
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    kneaddata_database \\
-        --download ${kneaddata_db_type} bowtie2 kneaddata_${kneaddata_db_type}
+    kneaddata_read_count_table \\
+        --input ./ \\
+        --output ${prefix}_read_count_table.tsv
+
+    sed -i '2d' ${prefix}_read_count_table.tsv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -11,11 +11,10 @@ process KNEADDATA_KNEADDATA {
     tuple val(meta), path(reads)
     path kneaddata_db_index
     path kneaddata_db_dir
-    path trimmomatic_path
 
     output:
     tuple val(meta), path("*paired_{1,2}.fastq.gz"), emit: reads
-    tuple val(meta), path("*.log"), emit: log
+    tuple val(meta), path("*kneaddata.log"), emit: kneaddata_log
     path "versions.yml" , emit: versions
 
     when:
@@ -24,6 +23,7 @@ process KNEADDATA_KNEADDATA {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def bowtie2_options = params.kd_bowtie2_options ? "--bowtie2-options '${params.kd_bowtie2_options}'" : ""
     """
     [ ! -f  ${prefix}_1.fastq.gz ] && ln -sf ${reads[0]} ${prefix}_1.fastq.gz
     [ ! -f  ${prefix}_2.fastq.gz ] && ln -sf ${reads[1]} ${prefix}_2.fastq.gz
@@ -31,11 +31,10 @@ process KNEADDATA_KNEADDATA {
         --input ${prefix}_1.fastq.gz \\
         --input ${prefix}_2.fastq.gz \\
         --output . \\
-        --output-prefix ${prefix} \\
+        --output-prefix ${prefix}_kneaddata \\
         --reference-db ${kneaddata_db_dir} \\
         --threads ${task.cpus} \\
-        --trimmomatic ${params.trimmomatic_path} \\
-        --bypass-trf \\
+        $bowtie2_options \\
         $args
 
     gzip *.fastq
