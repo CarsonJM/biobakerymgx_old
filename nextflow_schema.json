@@ -71,60 +71,47 @@
                     "type": "boolean"
                 },
                 "kd_trimmomatic_path": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "kd_trimmomatic_options": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "kd_sequencer_source": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "kd_bowtie2_options": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "kd_decontaminate_pairs": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "kd_bypass_trf": {
                     "type": "boolean",
                     "default": true
                 },
                 "kd_trf_path": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "kd_match": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "kd_mismatch": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "kd_delta": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "kd_pm": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "kd_pi": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "kd_minscore": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "kd_maxperiod": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "kd_store_temp_output": {
                     "type": "boolean"
@@ -153,24 +140,19 @@
                     "enum": ["mpa_vJan21_CHOCOPhlAnSGB_202103", "mpa_vOct22_CHOCOPhlAnSGB_202212"]
                 },
                 "mpa_bt2_ps": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "mpa_min_mapq_val": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "mpa_tax_lev": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "mpa_min_cu_len": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "mpa_min_alignment_len": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "mpa_add_viruses": {
                     "type": "boolean"
@@ -194,26 +176,22 @@
                     "type": "boolean"
                 },
                 "mpa_perc_nonzero": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "mpa_ignore_markers": {
                     "type": "boolean"
                 },
                 "mpa_file_w_markers_to_ignore": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "mpa_avoid_disqm": {
                     "type": "boolean"
                 },
                 "mpa_stat": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "mpa_t": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "mpa_unclassified_estimation": {
                     "type": "boolean",
@@ -239,51 +217,40 @@
                     "type": "boolean"
                 },
                 "hum_prescreen_threshold": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "hum_humann_bowtie2_options": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "hum_nucleotide_identity_threshold": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "hum_nucleotide_query_coverage_threshold": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "hum_nucleotide_subject_coverage_threshold": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "hum_bypass_translated_search": {
                     "type": "boolean"
                 },
                 "hum_diamond_options": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "hum_evalue": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "hum_translated_query_coverage_threshold": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "hum_translated_subject_coverage_threshold": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "hum_gap_fill": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "hum_minpath": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "hum_remove_temp_output": {
                     "type": "boolean",
@@ -294,16 +261,14 @@
                     "default": true
                 },
                 "hum_regroup_option": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 },
                 "hum_renorm_output": {
                     "type": "boolean",
                     "default": true
                 },
                 "hum_renorm_option": {
-                    "type": "string",
-                    "default": "None"
+                    "type": "string"
                 }
             }
         },
