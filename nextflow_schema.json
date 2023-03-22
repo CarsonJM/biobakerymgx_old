@@ -133,8 +133,7 @@
                     "type": "boolean",
                     "default": true
                 }
-            },
-            "required": ["run_kneaddata"]
+            }
         },
         "metaphlan_options": {
             "title": "MetaPhlAn options",
@@ -220,8 +219,7 @@
                     "type": "boolean",
                     "default": true
                 }
-            },
-            "required": ["run_metaphlan"]
+            }
         },
         "humann_options": {
             "title": "HUMAnN options",
@@ -307,8 +305,7 @@
                     "type": "string",
                     "default": "None"
                 }
-            },
-            "required": ["run_humann"]
+            }
         },
         "reference_genome_options": {
             "title": "Reference genome options",
