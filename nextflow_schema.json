@@ -5,12 +5,124 @@
     "description": "Pipeline implementing biobakery tools fmicrobiome analysis of shotgun metagenomic sequences",
     "type": "object",
     "definitions": {
+        "kneaddata": {
+            "title": "KneadData",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "run_kneaddata": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "kneaddata_db_type": {
+                    "type": "string",
+                    "default": "human_genome"
+                },
+                "kneaddata_trimmomatic_path": {
+                    "type": "string",
+                    "default": "/usr/local/share/trimmomatic-0.39-2",
+                    "format": "directory-path"
+                },
+                "kneaddata_options": {
+                    "type": "string"
+                }
+            }
+        },
+        "metaphlan": {
+            "title": "MetaPhlAn",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "run_metaphlan": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "metaphlan_db_version": {
+                    "type": "string",
+                    "default": "mpa_vJan21_CHOCOPhlAnSGB_202103"
+                },
+                "metaphlan_options": {
+                    "type": "string"
+                }
+            }
+        },
+        "humann": {
+            "title": "HUMAnN",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "run_humann": {
+                    "type": "boolean"
+                },
+                "humann_options": {
+                    "type": "string"
+                },
+                "humann_regroup_gene_families": {
+                    "type": "boolean"
+                },
+                "humann_regroup_option": {
+                    "type": "string"
+                },
+                "humann_renorm_output": {
+                    "type": "boolean"
+                },
+                "humann_renorm_option": {
+                    "type": "string"
+                }
+            }
+        },
+        "strainphlan": {
+            "title": "StrainPhlAn",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "run_strainphlan": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "strainphlan_species": {
+                    "type": "string",
+                    "default": "t__SGB15318_group"
+                },
+                "samples2markers_options": {
+                    "type": "string"
+                },
+                "strainphlan_options": {
+                    "type": "string"
+                }
+            }
+        },
+        "panphlan": {
+            "title": "PanPhlAn",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "run_panphlan": {
+                    "type": "boolean"
+                },
+                "panphlan_species": {
+                    "type": "string",
+                    "default": "Bacteroides_fragilis"
+                },
+                "panphlan_map_options": {
+                    "type": "string"
+                },
+                "panphlan_profile_options": {
+                    "type": "string"
+                }
+            }
+        },
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "outdir", "database_dir"],
+            "required": ["input", "outdir"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -28,12 +140,6 @@
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
                     "fa_icon": "fas fa-folder-open"
                 },
-                "database_dir": {
-                    "type": "string",
-                    "default": "/gscratch/pedslabs/Labs/Hoffman/resources",
-                    "description": "The directory where downloaded databases will be saved.",
-                    "format": "directory-path"
-                },
                 "email": {
                     "type": "string",
                     "description": "Email address for completion summary.",
@@ -45,230 +151,12 @@
                     "type": "string",
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
                     "fa_icon": "fas fa-file-signature"
-                }
-            }
-        },
-        "kneaddata_options": {
-            "title": "KneadData options",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "run_kneaddata": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Run KneadData."
                 },
-                "kneaddata_db_type": {
+                "database_dir": {
                     "type": "string",
-                    "default": "human_genome",
-                    "description": "The type of KneadData contaminant database to be used."
-                },
-                "kd_bypass_trim": {
-                    "type": "boolean"
-                },
-                "kd_run_trim_repetitive": {
-                    "type": "boolean"
-                },
-                "kd_trimmomatic_path": {
-                    "type": "string"
-                },
-                "kd_trimmomatic_options": {
-                    "type": "string"
-                },
-                "kd_sequencer_source": {
-                    "type": "string"
-                },
-                "kd_bowtie2_options": {
-                    "type": "string"
-                },
-                "kd_decontaminate_pairs": {
-                    "type": "string"
-                },
-                "kd_bypass_trf": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "kd_trf_path": {
-                    "type": "string"
-                },
-                "kd_match": {
-                    "type": "string"
-                },
-                "kd_mismatch": {
-                    "type": "string"
-                },
-                "kd_delta": {
-                    "type": "string"
-                },
-                "kd_pm": {
-                    "type": "string"
-                },
-                "kd_pi": {
-                    "type": "string"
-                },
-                "kd_minscore": {
-                    "type": "string"
-                },
-                "kd_maxperiod": {
-                    "type": "string"
-                },
-                "kd_store_temp_output": {
-                    "type": "boolean"
-                },
-                "kd_remove_intermediate_output": {
-                    "type": "boolean",
-                    "default": true
-                }
-            }
-        },
-        "metaphlan_options": {
-            "title": "MetaPhlAn options",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "run_metaphlan": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Run MetaPhlAn"
-                },
-                "metaphlan_db_version": {
-                    "type": "string",
-                    "default": "mpa_vJan21_CHOCOPhlAnSGB_202103",
-                    "description": "MetaPhlan database version to use.",
-                    "enum": ["mpa_vJan21_CHOCOPhlAnSGB_202103", "mpa_vOct22_CHOCOPhlAnSGB_202212"]
-                },
-                "mpa_bt2_ps": {
-                    "type": "string"
-                },
-                "mpa_min_mapq_val": {
-                    "type": "string"
-                },
-                "mpa_tax_lev": {
-                    "type": "string"
-                },
-                "mpa_min_cu_len": {
-                    "type": "string"
-                },
-                "mpa_min_alignment_len": {
-                    "type": "string"
-                },
-                "mpa_add_viruses": {
-                    "type": "boolean"
-                },
-                "mpa_ignore_eukaryotes": {
-                    "type": "boolean"
-                },
-                "mpa_ignore_bacteria": {
-                    "type": "boolean"
-                },
-                "mpa_ignore_archaea": {
-                    "type": "boolean"
-                },
-                "mpa_ignore_ksgbs": {
-                    "type": "boolean"
-                },
-                "mpa_ignore_usgbs": {
-                    "type": "boolean"
-                },
-                "mpa_stat_q": {
-                    "type": "boolean"
-                },
-                "mpa_perc_nonzero": {
-                    "type": "string"
-                },
-                "mpa_ignore_markers": {
-                    "type": "boolean"
-                },
-                "mpa_file_w_markers_to_ignore": {
-                    "type": "string"
-                },
-                "mpa_avoid_disqm": {
-                    "type": "boolean"
-                },
-                "mpa_stat": {
-                    "type": "string"
-                },
-                "mpa_t": {
-                    "type": "string"
-                },
-                "mpa_unclassified_estimation": {
-                    "type": "boolean",
-                    "default": true
-                }
-            }
-        },
-        "humann_options": {
-            "title": "HUMAnN options",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "run_humann": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Run HUMAnN"
-                },
-                "hum_bypass_nucleotide_search": {
-                    "type": "boolean"
-                },
-                "hum_bypass_prescreen": {
-                    "type": "boolean"
-                },
-                "hum_prescreen_threshold": {
-                    "type": "string"
-                },
-                "hum_humann_bowtie2_options": {
-                    "type": "string"
-                },
-                "hum_nucleotide_identity_threshold": {
-                    "type": "string"
-                },
-                "hum_nucleotide_query_coverage_threshold": {
-                    "type": "string"
-                },
-                "hum_nucleotide_subject_coverage_threshold": {
-                    "type": "string"
-                },
-                "hum_bypass_translated_search": {
-                    "type": "boolean"
-                },
-                "hum_diamond_options": {
-                    "type": "string"
-                },
-                "hum_evalue": {
-                    "type": "string"
-                },
-                "hum_translated_query_coverage_threshold": {
-                    "type": "string"
-                },
-                "hum_translated_subject_coverage_threshold": {
-                    "type": "string"
-                },
-                "hum_gap_fill": {
-                    "type": "string"
-                },
-                "hum_minpath": {
-                    "type": "string"
-                },
-                "hum_remove_temp_output": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "hum_regroup_gene_families": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "hum_regroup_option": {
-                    "type": "string"
-                },
-                "hum_renorm_output": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "hum_renorm_option": {
-                    "type": "string"
+                    "default": "/gscratch/pedslabs/Labs/Hoffman/resources",
+                    "fa_icon": "fas fa-folder-open",
+                    "format": "directory-path"
                 }
             }
         },
@@ -478,16 +366,22 @@
     },
     "allOf": [
         {
+            "$ref": "#/definitions/kneaddata"
+        },
+        {
+            "$ref": "#/definitions/metaphlan"
+        },
+        {
+            "$ref": "#/definitions/humann"
+        },
+        {
+            "$ref": "#/definitions/strainphlan"
+        },
+        {
+            "$ref": "#/definitions/panphlan"
+        },
+        {
             "$ref": "#/definitions/input_output_options"
-        },
-        {
-            "$ref": "#/definitions/kneaddata_options"
-        },
-        {
-            "$ref": "#/definitions/metaphlan_options"
-        },
-        {
-            "$ref": "#/definitions/humann_options"
         },
         {
             "$ref": "#/definitions/reference_genome_options"

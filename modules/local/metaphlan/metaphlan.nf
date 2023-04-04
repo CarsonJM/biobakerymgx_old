@@ -9,9 +9,7 @@ process METAPHLAN_METAPHLAN {
 
     input:
     tuple val(meta), path(reads)
-    path metaphlan_db_index
-    path metaphlan_db_dir
-    val metaphlan_db_version
+    path metaphlan_db
 
     output:
     tuple val(meta), path("*_profile.txt"), emit: metaphlan_profile
@@ -25,18 +23,16 @@ process METAPHLAN_METAPHLAN {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def bowtie2_options = params.mpa_bt2_ps ? "--bt2_ps '${params.mpa_bt2_ps}'" : ""
     """
     metaphlan \\
-    ${prefix}_kneaddata_paired_1.fastq.gz,${prefix}_kneaddata_paired_2.fastq.gz \\
+    ${prefix}_kneaddata_paired_1.fastq,${prefix}_kneaddata_paired_2.fastq \\
     --input_type fastq \\
-    --bowtie2db ${metaphlan_db_dir} \\
-    --index ${metaphlan_db_version} \\
+    --bowtie2db $metaphlan_db \\
+    --index $params.metaphlan_db_version \\
     --bowtie2out ${prefix}.bowtie2.bz2 \\
     --output_file ${prefix}_profile.txt \\
     --samout ${prefix}.sam.bz2 \\
-    --nproc ${task.cpus} \\
-    $bowtie2_options \\
+    --nproc $task.cpus \\
     $args
 
     cat <<-END_VERSIONS > versions.yml

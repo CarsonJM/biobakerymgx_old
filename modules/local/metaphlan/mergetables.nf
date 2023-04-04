@@ -20,7 +20,7 @@ process METAPHLAN_MERGETABLES {
     def args = task.ext.args ?: ''
     """
     merge_metaphlan_tables.py \\
-    ${metaphlan_profiles} > combined_metaphlan_profile.txt
+    $metaphlan_profiles > combined_metaphlan_profile.txt
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

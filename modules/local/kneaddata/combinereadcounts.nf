@@ -20,7 +20,7 @@ process KNEADDATA_COMBINEREADCOUNTS {
     def args = task.ext.args ?: ''
 
     """
-    awk 'FNR>1 || NR==1' ${kneaddata_read_count_table} > combined_read_count_table.tsv
+    awk 'FNR>1 || NR==1' $kneaddata_read_count_table > combined_read_count_table.tsv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

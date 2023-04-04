@@ -8,11 +8,9 @@ process KNEADDATA_DATABASE {
         'quay.io/biocontainers/kneaddata:0.10.0--pyhdfd78af_0' }"
 
     input:
-    val kneaddata_db_type
 
     output:
-    path "kneaddata_${params.kneaddata_db_type}/*.bt2" , emit: kneaddata_db_index
-    path "kneaddata_${params.kneaddata_db_type}/" , emit: kneaddata_db_dir
+    path "kneaddata_${params.kneaddata_db_type}/" , emit: kneaddata_db
     path "versions.yml" , emit: versions
 
     when:
@@ -23,7 +21,7 @@ process KNEADDATA_DATABASE {
 
     """
     kneaddata_database \\
-        --download ${kneaddata_db_type} bowtie2 kneaddata_${kneaddata_db_type}
+        --download $params.kneaddata_db_type bowtie2 kneaddata_${params.kneaddata_db_type}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -8,13 +8,11 @@ process STRAINPHLAN_SAMPLE2MARKERS {
         'quay.io/biocontainers/4.0.6--pyhca03a8a_0' }"
 
     input:
-    tuple val(meta), path(sam)
-    path metaphlan_db_index
-    path metaphlan_db_dir
+    tuple val(meta), path(metaphlan_sam)
+    path metaphlan_db
 
     output:
-    tuple val(meta) , path("consensus_markers/*.pkl"), emit: consensus_markers
-    path("consensus_markers"), emit: consensus_markers_dir
+    tuple val(meta), path("*.pkl"), emit: consensus_markers
     path "versions.yml" , emit: versions
 
     when:
@@ -26,11 +24,11 @@ process STRAINPHLAN_SAMPLE2MARKERS {
     """
     mkdir -p consensus_markers
     sample2markers.py \\
-    --input ${sam} \\
+    --input $metaphlan_sam \\
     --input_format bz2 \\
-    --output_dir consensus_markers \\
-    --database ${metaphlan_db_dir} \\
-    --nprocs ${task.cpus} \\
+    --output_dir ./ \\
+    --database $metaphlan_db \\
+    --nprocs $task.cpus \\
     $args
 
     cat <<-END_VERSIONS > versions.yml

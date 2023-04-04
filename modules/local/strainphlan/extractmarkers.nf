@@ -8,12 +8,10 @@ process STRAINPHLAN_EXTRACTMARKERS {
         'quay.io/biocontainers/4.0.6--pyhca03a8a_0' }"
 
     input:
-    path metaphlan_db_index
-    path metaphlan_db_dir
+    path metaphlan_db
 
     output:
-    path("db_markers/*.fna"), emit: db_markers
-    path("db_markers/"), emit: db_markers_dir
+    path("db_markers/"), emit: db_markers
     path "versions.yml" , emit: versions
 
     when:
@@ -24,8 +22,8 @@ process STRAINPHLAN_EXTRACTMARKERS {
     """
     mkdir -p db_markers
     extract_markers.py \\
-    --clades ${params.strainphlan_species} \\
-    --database ${metaphlan_db_dir}/${params.metaphlan_db_version}.pkl \\
+    --clades $params.strainphlan_species \\
+    --database $metaphlan_db/${params.metaphlan_db_version}.pkl \\
     --output_dir db_markers \\
 
 
