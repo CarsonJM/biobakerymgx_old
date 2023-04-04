@@ -8,11 +8,9 @@ process STRAINPHLAN_STRAINPHLAN {
         'quay.io/biocontainers/4.0.6--pyhca03a8a_0' }"
 
     input:
-    path metaphlan_db_index
-    path metaphlan_db_dir
+    path metaphlan_db
     path consensus_markers
-    path consensus_markers_dir
-    path db_markers_dir
+    path db_markers
 
     output:
     path("*"), emit: strainphlan_outputs
@@ -26,12 +24,12 @@ process STRAINPHLAN_STRAINPHLAN {
     """
     mkdir -p ${params.strainphlan_species}_output
     strainphlan \\
-    --database ${metaphlan_db_dir} \\
-    --samples ${consensus_markers} \\
-    --clade_markers ${db_markers_dir}/${params.strainphlan_species}.fna \\
+    --database $metaphlan_db \\
+    --samples $consensus_markers \\
+    --clade_markers $db_markers/${params.strainphlan_species}.fna \\
     --output_dir ${params.strainphlan_species}_output \\
-    --nprocs ${task.cpus} \\
-    --clade ${params.strainphlan_species} \\
+    --nprocs $task.cpus \\
+    --clade $params.strainphlan_species \\
     $args
 
 

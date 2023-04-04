@@ -15,20 +15,14 @@ workflow METAPHLAN {
     //
     // MODULE: MetaPhlAn4 database
     //
-    METAPHLAN_DATABASE (
-        params.metaphlan_db_version
-    )
-    ch_metaphlan_db_index = METAPHLAN_DATABASE.out.metaphlan_db_index
-    ch_metaphlan_db_dir = METAPHLAN_DATABASE.out.metaphlan_db_dir
+    METAPHLAN_DATABASE ()
 
     //
     // MODULE: MetaPhlAn4
     //
     METAPHLAN_METAPHLAN ( 
         ch_preprocessed_reads ,
-        ch_metaphlan_db_index ,
-        ch_metaphlan_db_dir ,
-        params.metaphlan_db_version
+        METAPHLAN_DATABASE.out.metaphlan_db ,
     )
 
     //
@@ -41,10 +35,9 @@ workflow METAPHLAN {
     ch_versions = ch_versions.mix(METAPHLAN_METAPHLAN.out.versions.first())
 
     emit:
-    metaphlan_db_index = ch_metaphlan_db_index
+    metaphlan_db = METAPHLAN_DATABASE.out.metaphlan_db
     metaphlan_profiles = METAPHLAN_METAPHLAN.out.metaphlan_profile
     metaphlan_sams = METAPHLAN_METAPHLAN.out.metaphlan_sam
-    combined_metaphlan_profile = METAPHLAN_MERGETABLES.out.combined_metaphlan_profile
     
     versions = ch_versions // channel: [ versions.yml ]
 }

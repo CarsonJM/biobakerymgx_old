@@ -16,19 +16,14 @@ workflow KNEADDATA {
     //
     // MODULE: KneadData database
     //
-    KNEADDATA_DATABASE (
-        params.kneaddata_db_type
-    )
-    ch_kneaddata_db_index = KNEADDATA_DATABASE.out.kneaddata_db_index
-    ch_kneaddata_db_dir = KNEADDATA_DATABASE.out.kneaddata_db_dir
+    KNEADDATA_DATABASE ()
 
     //
     // MODULE: KneadData
     //
     KNEADDATA_KNEADDATA ( 
         ch_raw_short_reads ,
-        ch_kneaddata_db_index ,
-        ch_kneaddata_db_dir
+        KNEADDATA_DATABASE.out.kneaddata_db
     )
 
     //
@@ -49,7 +44,6 @@ workflow KNEADDATA {
 
     emit:
     reads = KNEADDATA_KNEADDATA.out.reads // channel: [ val(meta), [ reads ] ]
-    kneaddata_combined_read_count_table = KNEADDATA_COMBINEREADCOUNTS.out.kneaddata_combined_read_count_table
 
     versions = ch_versions // channel: [ versions.yml ]
 }

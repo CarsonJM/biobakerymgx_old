@@ -8,11 +8,9 @@ process METAPHLAN_DATABASE {
         'quay.io/biocontainers/metaphlan:4.0.6--pyhca03a8a_0' }"
 
     input:
-    val metaphlan_db_version
 
     output:
-    path "${params.metaphlan_db_version}/*.bt2l" , emit: metaphlan_db_index
-    path "${params.metaphlan_db_version}/" , emit: metaphlan_db_dir
+    path "$params.metaphlan_db_version/" , emit: metaphlan_db
     path "versions.yml" , emit: versions
 
     when:
@@ -24,8 +22,8 @@ process METAPHLAN_DATABASE {
     """
     metaphlan \\
         --install \\
-        --index ${metaphlan_db_version} \\
-        --bowtie2db ${metaphlan_db_version}
+        --index $params.metaphlan_db_version \\
+        --bowtie2db $params.metaphlan_db_version
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

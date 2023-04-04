@@ -46,7 +46,7 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { KNEADDATA } from '../subworkflows/local/kneaddata'
 include { METAPHLAN } from '../subworkflows/local/metaphlan'
 include { HUMANN } from '../subworkflows/local/humann'
-// include { STRAINPHLAN } from '../subworkflows/local/strainphlan'
+include { STRAINPHLAN } from '../subworkflows/local/strainphlan'
 // include { PANPHLAN } from '../subworkflows/local/panphlan'
 
 /*
@@ -115,9 +115,10 @@ workflow BIOBAKERYMGX {
         )
         ch_merged_reads = HUMANN.out.merged_reads
     }
-    // else {
-    //     ch_merged_reads = HUMANN_MERGEREADS.out.merged_reads
-    // }
+    else {
+        HUMANN_MERGEREADS ( ch_preprocessed_reads )
+        ch_merged_reads = HUMANN_MERGEREADS.out.merged_reads
+    }
 
 
 
@@ -125,10 +126,12 @@ workflow BIOBAKERYMGX {
     // SUBWORKFLOW: StrainPhlAn4
     //
     // Get strain profile
-    // STRAINPHLAN (
-    //     METAPHLAN.out.metaphlan_sams ,
-    //     METAPHLAN.out.metaphlan_db_index
-    // )
+    if ( params.run_strainphlan ) {
+        STRAINPHLAN (
+            METAPHLAN.out.metaphlan_sams ,
+            METAPHLAN.out.metaphlan_db
+        )
+    }
 
 
     //

@@ -11,7 +11,7 @@ process HUMANN_MERGEREADS {
     tuple val(meta) , path(reads)
 
     output:
-    tuple val(meta) , path("*_merged_reads.fastq.gz") , emit: merged_reads
+    tuple val(meta) , path("*_merged_reads.fastq") , emit: merged_reads
     path "versions.yml" , emit: versions
 
     when:
@@ -22,7 +22,7 @@ process HUMANN_MERGEREADS {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    cat ${prefix}_kneaddata_paired_1.fastq.gz ${prefix}_kneaddata_paired_2.fastq.gz > ${prefix}_merged_reads.fastq.gz
+    cat $reads > ${prefix}_merged_reads.fastq
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

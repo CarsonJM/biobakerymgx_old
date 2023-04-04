@@ -11,9 +11,7 @@ process HUMANN_HUMANN {
     tuple val(meta) , path(reads)
     tuple val(meta) , path(metaphlan_profile)
     path chocophlan_db
-    path chocophlan_db_dir
     path uniref_db
-    path uniref_db_dir
 
     output:
     tuple val(meta) , path("*_genefamilies.tsv") , emit: humann_genefamilies
@@ -28,20 +26,16 @@ process HUMANN_HUMANN {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def bowtie2_options = params.hum_humann_bowtie2_options ? "--bowtie-options '${params.humann_bowtie2_options}'" : ""
-    def diamond_options = params.hum_diamond_options ? "--diamond-options '${params.diamond_options}'" : ""
     """
     humann \\
-    --input ${prefix}_merged_reads.fastq.gz \\
+    --input $reads \\
     --output ./ \\
-    --threads ${task.cpus} \\
-    --taxonomic-profile ${metaphlan_profile} \\
+    --threads $task.cpus \\
+    --taxonomic-profile $metaphlan_profile \\
     --input-format fastq.gz \\
-    --nucleotide-database ${chocophlan_db_dir} \\
-    --protein-database ${uniref_db_dir} \\
+    --nucleotide-database $chocophlan_db \\
+    --protein-database $uniref_db \\
     --o-log ${prefix}_humann.log \\
-    $bowtie2_options \\
-    $diamond_options \\
     $args
 
     cat <<-END_VERSIONS > versions.yml
