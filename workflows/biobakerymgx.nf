@@ -72,6 +72,10 @@ def multiqc_report = []
 
 workflow BIOBAKERYMGX {
 
+    // To Do List:
+    // TODO: change input file format
+    // TODO: add module to merge replicate reads
+
     ch_versions = Channel.empty()
 
     //

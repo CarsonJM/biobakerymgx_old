@@ -9,6 +9,7 @@ workflow PANPHLAN {
 
 
     main:
+    // TODO: Reformat to match other modules
 
     ch_versions = Channel.empty()
 
