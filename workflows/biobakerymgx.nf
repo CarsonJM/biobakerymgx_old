@@ -73,17 +73,18 @@ def multiqc_report = []
 workflow BIOBAKERYMGX {
 
     // To Do List:
-    // TODO: change input file format
     // TODO: add module to merge replicate reads
 
     ch_versions = Channel.empty()
 
     //
-    // SUBWORKFLOW: input check
+    // SUBWORKFLOW: INPUT_CHECK 
     //
     // Check to make sure that all inputs are correct
     INPUT_CHECK ()
-    ch_raw_short_reads = INPUT_CHECK.out.raw_short_reads
+    ch_raw_reads = INPUT_CHECK.out.raw_reads
+
+    
 
     //
     // SUBWORKFLOW: KneadData
@@ -91,12 +92,12 @@ workflow BIOBAKERYMGX {
     // Trim, quality filter, and remove contaminant reads
     if ( params.run_kneaddata ) {
         KNEADDATA (
-            ch_raw_short_reads
+            ch_raw_reads
         )
-        ch_preprocessed_reads = KNEADDATA.out.reads
+        ch_preprocessed_reads = KNEADDATA.out.preprocessed_reads
     }
     else {
-        ch_preprocessed_reads = INPUT_CHECK.out.raw_short_reads
+        ch_preprocessed_reads = INPUT_CHECK.out.raw_reads
     }
 
     //

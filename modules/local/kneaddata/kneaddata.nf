@@ -12,7 +12,7 @@ process KNEADDATA_KNEADDATA {
     path kneaddata_db
 
     output:
-    tuple val(meta), path("*paired_{1,2}.fastq"), emit: reads
+    tuple val(meta), path("*paired_{1,2}.fastq"), emit: preprocessed_reads
     tuple val(meta), path("*kneaddata.log"), emit: kneaddata_log
     path "versions.yml" , emit: versions
 
