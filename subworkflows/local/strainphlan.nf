@@ -1,5 +1,6 @@
 include { STRAINPHLAN_EXTRACTMARKERS } from '../../modules/local/strainphlan/extractmarkers'
 include { STRAINPHLAN_SAMPLE2MARKERS } from '../../modules/local/strainphlan/sample2markers'
+include { STRAINPHLAN_REFERENCES } from '../../modules/local/strainphlan/references'
 include { STRAINPHLAN_STRAINPHLAN } from '../../modules/local/strainphlan/strainphlan'
 
 workflow STRAINPHLAN {
@@ -7,7 +8,6 @@ workflow STRAINPHLAN {
     take:
     ch_metaphlan_sam // channel: [ val(meta), [ sam ] ]
     ch_metaphlan_db
-
 
     main:
 
@@ -20,16 +20,22 @@ workflow STRAINPHLAN {
     )
 
     // MODULE: EXTRACTMARKERS
-    STRAINPHLAN_EXTRACTMARKERS ( 
+    STRAINPHLAN_EXTRACTMARKERS (
         ch_metaphlan_db
     )
+
+    // MODULE: EXTRACTMARKERS
+    if (params.strainphlan_references) {
+        STRAINPHLAN_REFERENCES ( )
+    }
 
 
     // MODULE: STRAINPHLAN
     STRAINPHLAN_STRAINPHLAN ( 
         ch_metaphlan_db ,
         STRAINPHLAN_SAMPLE2MARKERS.out.consensus_markers.map{it -> it[1]}.collect() ,
-        STRAINPHLAN_EXTRACTMARKERS.out.db_markers
+        STRAINPHLAN_EXTRACTMARKERS.out.db_markers ,
+        STRAINPHLAN_REFERENCES.out.reference_genomes
     )
 
     ch_versions = ch_versions.mix(STRAINPHLAN_STRAINPHLAN.out.versions.first())

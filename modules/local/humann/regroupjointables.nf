@@ -8,11 +8,11 @@ process HUMANN_REGROUPJOINTABLES {
         'quay.io/biocontainers/humann:3.6.1--pyh7cba7a3_1' }"
 
     input:
-    path(ombined_humann_regroup)
-    val regroup_option
+    path combined_humann_regroup
+    val file_name
 
     output:
-    path("combined_${regroup_option}.tsv") , emit: humann_combined_regroup
+    path("combined_${params.humann_regroup_option}.tsv") , emit: humann_combined_regroup
     path "versions.yml" , emit: versions
 
     when:
@@ -23,8 +23,8 @@ process HUMANN_REGROUPJOINTABLES {
     """
     humann_join_tables \\
     --input ./ \\
-    --output combined_${regroup_option}.tsv \\
-    --file_name ${regroup_option}
+    --output combined_${file_name}.tsv \\
+    --file_name $params.humann_regroup_option
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

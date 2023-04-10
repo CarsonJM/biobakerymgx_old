@@ -9,10 +9,9 @@ process HUMANN_REGROUPRENORM {
 
     input:
     tuple val(meta), path(humann_regroup)
-    val renorm_option
 
     output:
-    tuple val(meta) , path("*${renorm_option}.tsv") , emit: humann_regrouped_renorm
+    tuple val(meta) , path("*${params.humann_renorm_option}.tsv") , emit: humann_regrouped_renorm
     path "versions.yml" , emit: versions
 
     when:
@@ -23,9 +22,9 @@ process HUMANN_REGROUPRENORM {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     humann_renorm_table \\
-    --input ${humann_regroup} \\
-    --output ${prefix}_${params.regroup_option}_${renorm_option}.tsv \\
-    --units ${renorm_option} \\
+    --input $humann_regroup \\
+    --output ${prefix}_${params.humann_regroup_option}_${params.humann_renorm_option}.tsv \\
+    --units $params.humann_renorm_option \\
     --special n
 
     cat <<-END_VERSIONS > versions.yml

@@ -11,7 +11,6 @@ process HUMANN_JOINTABLES {
     path(humann_genefamilies)
     path(humann_pathabundance)
     path(humann_pathcoverage)
-    val(renorm)
 
     output:
     path("combined_genefamilies${renorm}.tsv") , emit: humann_combined_genefamilies
@@ -27,17 +26,17 @@ process HUMANN_JOINTABLES {
     """
     humann_join_tables \\
     --input ./ \\
-    --output combined_genefamilies${renorm}.tsv \\
+    --output combined_genefamilies${params.humann_renorm_option}.tsv \\
     --file_name genefamilies
 
     humann_join_tables \\
     --input ./ \\
-    --output combined_pathabundance${renorm}.tsv \\
+    --output combined_pathabundance${params.humann_renorm_option}.tsv \\
     --file_name pathabundance
 
     humann_join_tables \\
     --input ./ \\
-    --output combined_pathcoverage${renorm}.tsv \\
+    --output combined_pathcoverage${params.humann_renorm_option}.tsv \\
     --file_name pathcoverage
 
     cat <<-END_VERSIONS > versions.yml

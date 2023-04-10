@@ -1,6 +1,6 @@
-process STRAINPHLAN_STRAINPHLAN {
+process STRAINPHLAN_REFERENCES {
     tag "strainphlan"
-    label 'process_high'
+    label 'process_single'
 
     conda "bioconda::metaphlan=4.0.6"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -8,13 +8,9 @@ process STRAINPHLAN_STRAINPHLAN {
         'quay.io/biocontainers/4.0.6--pyhca03a8a_0' }"
 
     input:
-    path metaphlan_db
-    path consensus_markers
-    path db_markers
-    path reference_genomes
 
     output:
-    path("*"), emit: strainphlan_outputs
+    path("*.fna"), emit: reference_genomes
     path "versions.yml" , emit: versions
 
     when:
@@ -23,16 +19,12 @@ process STRAINPHLAN_STRAINPHLAN {
     script:
     def args = task.ext.args ?: ''
     """
-    mkdir -p ${params.strainphlan_species}_output
-    strainphlan \\
-    --database $metaphlan_db \\
-    --samples $consensus_markers \\
-    --clade_markers $db_markers/${params.strainphlan_species}.fna \\
-    --output_dir ${params.strainphlan_species}_output \\
-    --nprocs $task.cpus \\
-    --clade $params.strainphlan_species \\
-    --references $reference_genomes \\
-    $args
+    IFS=',' read -ra ADDR <<< $params.strainphlan_references
+    for i in "\${ADDR[@]}"; do
+    wget \$i
+    done
+
+    gunzip *.fna.gz
 
 
     cat <<-END_VERSIONS > versions.yml

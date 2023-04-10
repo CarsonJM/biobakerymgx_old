@@ -11,8 +11,7 @@ process HUMANN_UNIREFDB {
     path database_dir
 
     output:
-    path "humann_databases/uniref/uniref90_201901b_full.dmnd" , emit: uniref_db
-    path "humann_databases/uniref/" , emit: uniref_db_dir
+    path "humann_databases/uniref/" , emit: uniref_db
     path "versions.yml" , emit: versions
 
     when:

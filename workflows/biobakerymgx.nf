@@ -45,7 +45,7 @@ include { HUMANN_MERGEREADS } from '../modules/local/humann/mergereads.nf'
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 include { KNEADDATA } from '../subworkflows/local/kneaddata'
 include { METAPHLAN } from '../subworkflows/local/metaphlan'
-include { HUMANN } from '../subworkflows/local/humann'
+// include { HUMANN } from '../subworkflows/local/humann'
 include { STRAINPHLAN } from '../subworkflows/local/strainphlan'
 // include { PANPHLAN } from '../subworkflows/local/panphlan'
 
@@ -110,16 +110,16 @@ workflow BIOBAKERYMGX {
         )
     }
 
-    //
-    // SUBWORKFLOW: HUMAnN3
-    //
-    if ( params.run_humann ) {
-        HUMANN (
-            ch_preprocessed_reads ,
-            METAPHLAN.out.metaphlan_profiles
-        )
-        ch_merged_reads = HUMANN.out.merged_reads
-    }
+    // //
+    // // SUBWORKFLOW: HUMAnN3
+    // //
+    // if ( params.run_humann ) {
+    //     HUMANN (
+    //         ch_preprocessed_reads ,
+    //         METAPHLAN.out.metaphlan_profiles
+    //     )
+    //     ch_merged_reads = HUMANN.out.merged_reads
+    // }
     else {
         HUMANN_MERGEREADS ( ch_preprocessed_reads )
         ch_merged_reads = HUMANN_MERGEREADS.out.merged_reads

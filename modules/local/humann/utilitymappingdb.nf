@@ -11,8 +11,7 @@ process HUMANN_UTILITYMAPPINGDB {
     path database_dir
 
     output:
-    path "humann_databases/utility_mapping/map_ec_name.txt.gz" , emit: utilitymapping_db
-    path "humann_databases/utility_mapping/" , emit: utilitymapping_db_dir
+    path "humann_databases/utility_mapping/" , emit: utilitymapping_db
     path "versions.yml" , emit: versions
 
     when:

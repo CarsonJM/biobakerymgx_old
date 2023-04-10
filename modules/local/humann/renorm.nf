@@ -11,12 +11,11 @@ process HUMANN_RENORM {
     tuple val(meta), path(humann_genefamilies)
     tuple val(meta), path(humann_pathcoverage)
     tuple val(meta), path(humann_pathabundance)
-    val renorm_option
 
     output:
-    tuple val(meta) , path("*genefamilies_${renorm_option}.tsv") , emit: humann_genefamilies_renorm
-    tuple val(meta) , path("*pathcoverage_${renorm_option}.tsv") , emit: humann_pathcoverage_renorm
-    tuple val(meta) , path("*pathabundance_${renorm_option}.tsv") , emit: humann_pathabundance_renorm
+    tuple val(meta) , path("*genefamilies_${params.humann_renorm_option}.tsv") , emit: humann_genefamilies_renorm
+    tuple val(meta) , path("*pathcoverage_${params.humann_renorm_option}.tsv") , emit: humann_pathcoverage_renorm
+    tuple val(meta) , path("*pathabundance_${params.humann_renorm_option}.tsv") , emit: humann_pathabundance_renorm
     path "versions.yml" , emit: versions
 
     when:
@@ -27,21 +26,21 @@ process HUMANN_RENORM {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     humann_renorm_table \\
-    --input ${humann_genefamilies} \\
-    --output ${prefix}_genefamilies_${renorm_option}.tsv \\
-    --units ${renorm_option} \\
+    --input $humann_genefamilies \\
+    --output ${prefix}_genefamilies_${params.humann_renorm_option}.tsv \\
+    --units $params.humann_renorm_option \\
     --special n
 
     humann_renorm_table \\
-    --input ${humann_pathcoverage} \\
-    --output ${prefix}_pathcoverage_${renorm_option}.tsv \\
-    --units ${renorm_option} \\
+    --input $humann_pathcoverage \\
+    --output ${prefix}_pathcoverage_${params.humann_renorm_option}.tsv \\
+    --units $params.humann_renorm_option \\
     --special n
 
     humann_renorm_table \\
     --input ${humann_pathabundance} \\
-    --output ${prefix}_pathabundance_${renorm_option}.tsv \\
-    --units ${renorm_option} \\
+    --output ${prefix}_pathabundance_${params.humann_renorm_option}.tsv \\
+    --units $params.humann_renorm_option \\
     --special n
 
     cat <<-END_VERSIONS > versions.yml

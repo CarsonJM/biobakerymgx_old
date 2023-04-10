@@ -9,12 +9,10 @@ process HUMANN_REGROUP {
 
     input:
     path utilitymapping_db
-    path utilitymapping_db_dir
     tuple val(meta) , path(humann_genefamilies)
-    val regroup_option
 
     output:
-    tuple val(meta) , path("*${regroup_option}.tsv") , emit: humann_regrouped
+    tuple val(meta) , path("*${params.humann_regroup_option}.tsv") , emit: humann_regrouped
     path "versions.yml" , emit: versions
 
     when:
@@ -26,8 +24,8 @@ process HUMANN_REGROUP {
     """
     humann_regroup_table \\
     --input ${humann_genefamilies} \\
-    --output ${prefix}_${regroup_option}.tsv \\
-    --custom ${utilitymapping_db_dir}/${regroup_option}.txt.gz
+    --output ${prefix}_${params.humann_regroup_option}.tsv \\
+    --custom ${utilitymapping_db}/${params.humann_regroup_option}.txt.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

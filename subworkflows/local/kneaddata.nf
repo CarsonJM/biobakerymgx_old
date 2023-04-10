@@ -30,7 +30,7 @@ workflow KNEADDATA {
                 def meta = [:]
                 meta.id          = id
                 [ meta, reads.collect { it[0] }, reads.collect { it[1] } ]
-        }.view()
+        }
 
     //
     // MODULE: MERGE_REPLICATES

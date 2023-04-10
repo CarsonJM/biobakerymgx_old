@@ -19,7 +19,7 @@ process HUMANN_MERGEREADS {
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix = task.ext.prefix ?: "$meta.id"
 
     """
     cat $reads > ${prefix}_merged_reads.fastq
