@@ -2,10 +2,10 @@ process KNEADDATA_KNEADDATA {
     tag "$meta.id"
     label 'process_high'
 
-    conda "bioconda::kneaddata=0.10.0"
+    conda "bioconda::kneaddata=0.12.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/kneaddata:0.10.0--pyhdfd78af_0':
-        'quay.io/biocontainers/kneaddata:0.10.0--pyhdfd78af_0' }"
+        'https://depot.galaxyproject.org/singularity/kneaddata:0.12.0--pyhdfd78af_1':
+        'quay.io/biocontainers/kneaddata:0.12.0--pyhdfd78af_1' }"
 
     input:
     tuple val(meta), path(reads)
@@ -26,8 +26,8 @@ process KNEADDATA_KNEADDATA {
     [ ! -f  ${prefix}_1.fastq.gz ] && ln -sf ${reads[0]} ${prefix}_1.fastq.gz
     [ ! -f  ${prefix}_2.fastq.gz ] && ln -sf ${reads[1]} ${prefix}_2.fastq.gz
     kneaddata \\
-        --input ${prefix}_1.fastq.gz \\
-        --input ${prefix}_2.fastq.gz \\
+        --input1 ${prefix}_1.fastq.gz \\
+        --input2 ${prefix}_2.fastq.gz \\
         --output . \\
         --output-prefix ${prefix}_kneaddata \\
         --reference-db $kneaddata_db \\

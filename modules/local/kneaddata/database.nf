@@ -2,10 +2,10 @@ process KNEADDATA_DATABASE {
     tag 'kneaddata_database'
     label 'process_single'
 
-    conda "bioconda::kneaddata=0.10.0"
+    conda "bioconda::kneaddata=0.12.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/kneaddata:0.10.0--pyhdfd78af_0':
-        'quay.io/biocontainers/kneaddata:0.10.0--pyhdfd78af_0' }"
+        'https://depot.galaxyproject.org/singularity/kneaddata:0.12.0--pyhdfd78af_1':
+        'quay.io/biocontainers/kneaddata:0.12.0--pyhdfd78af_1' }"
 
     input:
 
